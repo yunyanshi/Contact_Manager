@@ -2,4 +2,6 @@
 
 ## This is the final project of the COEN275
 
+### Test 2
+
 ### Test 3
