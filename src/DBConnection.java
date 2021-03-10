@@ -42,6 +42,22 @@ public class DBConnection {
         }
         return resultSet;
     }
-
-
+    //Contact, Friends, Family, Favorites
+    public ResultSet getListResultSet(String tab) {
+    	String query = "";
+    	if(tab.equals("contact")) {
+    		query = "SELECT user_id, name FROM Contacts order BY name";
+    	}
+    	else {
+    		query = "SELECT user_id, name FROM Contacts Where user_id in "
+    			+ "(SELECT user_id FROM " + tab  + ") order BY name";
+    	}
+    	ResultSet resultSet = null;
+        try {
+            resultSet = statement.executeQuery(query);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return resultSet;
+    }
 }
