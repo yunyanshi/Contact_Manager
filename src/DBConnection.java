@@ -20,9 +20,16 @@ public class DBConnection {
         }
     }
 
-    public ResultSet getContactListResultSet() {
-        HashMap<Integer, String> map = new HashMap<>();
-        String query = "SELECT user_id, name FROM Contacts order BY name";
+    public ResultSet getContactListResultSet(String tab) {
+        String query;
+        if(tab.equals("contact")) {
+            query = "SELECT user_id, name FROM Contacts order BY name";
+        }
+        else {
+            query = "SELECT user_id, name FROM Contacts Where user_id in "
+                    + "(SELECT user_id FROM " + tab  + ") order BY name";
+        }
+
         ResultSet resultSet = null;
         try {
             resultSet = statement.executeQuery(query);
@@ -42,22 +49,5 @@ public class DBConnection {
         }
         return resultSet;
     }
-    //Contact, Friends, Family, Favorites
-    public ResultSet getListResultSet(String tab) {
-    	String query = "";
-    	if(tab.equals("contact")) {
-    		query = "SELECT user_id, name FROM Contacts order BY name";
-    	}
-    	else {
-    		query = "SELECT user_id, name FROM Contacts Where user_id in "
-    			+ "(SELECT user_id FROM " + tab  + ") order BY name";
-    	}
-    	ResultSet resultSet = null;
-        try {
-            resultSet = statement.executeQuery(query);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return resultSet;
-    }
+
 }

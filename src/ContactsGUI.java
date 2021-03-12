@@ -33,6 +33,7 @@ public class ContactsGUI {
         window.setTitle("Contacts");
         window.setVisible(true);
     }
+
     //Main Panel (Left Panel + Right Panel)
     private void createPanels() {
         topPanel = new JPanel(new GridLayout(1, 2));
@@ -42,6 +43,7 @@ public class ContactsGUI {
         createRightPanel();
         topPanel.add(rightPanel);
     }
+
     //Leftmost Panel + Contacts List Panel
     private void createLeftPanel() {
         leftPanel = new JPanel(new GridLayout(1, 2));
@@ -69,16 +71,15 @@ public class ContactsGUI {
         allContactsTab.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				reload("contact");
+				reloadContactListPanel("Contacts");
 			}
         });
 
         JButton favoritesTab = new JButton("Favorites");
         favoritesTab.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				reload("favorites");
+				reloadContactListPanel("Favorites");
 			}
         });
         
@@ -87,19 +88,17 @@ public class ContactsGUI {
         JButton familyTab = new JButton("Family");
         tabLabelPanel.add(familyTab);
         familyTab.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				reload("family");
+				reloadContactListPanel("Family");
 			}
         });
 
         JButton friendsTab = new JButton("Friends");
         friendsTab.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				reload("friends");
+				reloadContactListPanel("Friends");
 			}
         });
         tabLabelPanel.add(friendsTab);
@@ -124,92 +123,57 @@ public class ContactsGUI {
         contactListPanel = new JPanel();
         contactListPanel.setBorder(BorderFactory.createEtchedBorder());
         contactListPanel.setLayout(new BoxLayout(contactListPanel, BoxLayout.Y_AXIS));
-        ResultSet contactListResultSet = connection.getContactListResultSet();
-        buttonMap = new HashMap<>();
-        try {
-            while (contactListResultSet != null && contactListResultSet.next()) {
-                int user_id = contactListResultSet.getInt(1);
-                String name = contactListResultSet.getString(2);
-                JButton button = new JButton(name);
 
-                button.setBorderPainted(false);
-                buttonMap.put(button, user_id);
-                contactListPanel.add(button);
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        ResultSet contactInfoResultSet = connection.getContactInfoResultSet(user_id);
-                        nameTextField.setText(name);
-                        try {
-                            while (contactInfoResultSet.next()) {
-                                phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
-                                emailTextField.setText((contactInfoResultSet.getString("email")));
-                                addressTextField.setText(contactInfoResultSet.getString("address"));
-                                notesTextField.setText(contactInfoResultSet.getString("notes"));
-                            }
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
-
-                    }
-                });
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        
         contactListScrollPane = new JScrollPane(contactListPanel);
-        contactListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
+        contactListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        reloadContactListPanel("Contacts");
     }
     
-    public void reload(String tab)  {
+    public void reloadContactListPanel(String tab)  {
+        // Clear all components
     	contactListPanel.removeAll();
-    	
-    	
-    	
-    	ResultSet contactListResultSet = connection.getListResultSet(tab);
-    	contactListPanel = new JPanel();
-        contactListPanel.setBorder(BorderFactory.createEtchedBorder());
-        contactListPanel.setLayout(new BoxLayout(contactListPanel, BoxLayout.Y_AXIS));
-       // ResultSet contactListResultSet = connection.getContactListResultSet();
-       // buttonMap.clear();
+    	contactListPanel.repaint();
+    	contactListPanel.revalidate();
+
+    	// Initialize buttonMap
         buttonMap = new HashMap<>();
-        try {
-            while (contactListResultSet != null && contactListResultSet.next()) {
-                int user_id = contactListResultSet.getInt(1);
-                String name = contactListResultSet.getString(2);
-                System.out.println(user_id + ", " + name);
-                JButton button = new JButton(name);
-                button.setBorderPainted(false);
-                buttonMap.put(button, user_id);
-                contactListPanel.add(button);
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        ResultSet contactInfoResultSet = connection.getContactInfoResultSet(user_id);
-                        nameTextField.setText(name);
-                        try {
-                            while (contactInfoResultSet.next()) {
-                                phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
-                                emailTextField.setText((contactInfoResultSet.getString("email")));
-                                addressTextField.setText(contactInfoResultSet.getString("address"));
-                                notesTextField.setText(contactInfoResultSet.getString("notes"));
+
+        // Fetch data from database
+        ResultSet contactListResultSet = connection.getContactListResultSet(tab);
+
+        // Display data
+        if (contactListResultSet != null) {
+            try {
+                while (contactListResultSet.next()) {
+                    int user_id = contactListResultSet.getInt(1);
+                    String name = contactListResultSet.getString(2);
+                    JButton button = new JButton(name);
+                    button.setBorderPainted(false);
+                    buttonMap.put(button, user_id);
+                    contactListPanel.add(button);
+                    button.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            ResultSet contactInfoResultSet = connection.getContactInfoResultSet(user_id);
+                            nameTextField.setText(name);
+                            try {
+                                while (contactInfoResultSet.next()) {
+                                    phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
+                                    emailTextField.setText((contactInfoResultSet.getString("email")));
+                                    addressTextField.setText(contactInfoResultSet.getString("address"));
+                                    notesTextField.setText(contactInfoResultSet.getString("notes"));
+                                }
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
                             }
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
                         }
-                    }
-                });
+                    });
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
-        
-        contactListScrollPane = new JScrollPane(contactListPanel);
-        contactListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        contactListPanel.revalidate();
-        contactListPanel.repaint();
     }
     
     //Right Panel
