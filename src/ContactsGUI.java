@@ -62,11 +62,8 @@ public class ContactsGUI {
         JPanel tabLabelPanel = new JPanel();
         tabLabelPanel.setLayout(new GridLayout(4, 1));
 
-        JButton allContactsTab = new JButton("All Contacts");
-        allContactsTab.setForeground(Color.red);
-        allContactsTab.setBackground(Color.green);
-        allContactsTab.setOpaque(true);
-
+        TabButton allContactsTab = new TabButton("All Contacts");
+//        allContactsTab.setSelected(true);
         tabLabelPanel.add(allContactsTab);
         allContactsTab.addActionListener(new ActionListener() {
 			@Override
@@ -75,7 +72,8 @@ public class ContactsGUI {
 			}
         });
 
-        JButton favoritesTab = new JButton("Favorites");
+        TabButton favoritesTab = new TabButton("Favorites");
+        tabLabelPanel.add(favoritesTab);
         favoritesTab.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -83,9 +81,8 @@ public class ContactsGUI {
 			}
         });
         
-        tabLabelPanel.add(favoritesTab);
 
-        JButton familyTab = new JButton("Family");
+        TabButton familyTab = new TabButton("Family");
         tabLabelPanel.add(familyTab);
         familyTab.addActionListener(new ActionListener() {
 			@Override
@@ -94,14 +91,15 @@ public class ContactsGUI {
 			}
         });
 
-        JButton friendsTab = new JButton("Friends");
+        TabButton friendsTab = new TabButton("Friends");
+        tabLabelPanel.add(friendsTab);
         friendsTab.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				reloadContactListPanel("Friends");
 			}
         });
-        tabLabelPanel.add(friendsTab);
+
 
         tabPanel.add(tabLabelPanel);
         tabPanel.add(Box.createVerticalGlue());
@@ -109,6 +107,7 @@ public class ContactsGUI {
         JButton addContactButton = new JButton("+");
         addContactButton.setToolTipText("New Contact");
         addContactButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         addContactButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
