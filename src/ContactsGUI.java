@@ -60,6 +60,10 @@ public class ContactsGUI {
         tabLabelPanel.setLayout(new GridLayout(4, 1));
 
         JButton allContactsTab = new JButton("All Contacts");
+        allContactsTab.setForeground(Color.red);
+        allContactsTab.setBackground(Color.green);
+        allContactsTab.setOpaque(true);
+
         tabLabelPanel.add(allContactsTab);
 
         JButton favoritesTab = new JButton("Favorites");
