@@ -35,7 +35,7 @@ public class CirclePanel extends JPanel {
 		g.setFont(sanSerifFont);
 	
 		fm = g.getFontMetrics();
-		g.drawString(text, 40, 50);	
+		g.drawString(text, 40, 52);	
 	}
 	
 	public void setText(String text) {
