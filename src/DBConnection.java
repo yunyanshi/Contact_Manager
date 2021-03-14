@@ -138,4 +138,18 @@ public class DBConnection {
 		}	
 	}
 
+	public boolean ifBelongs(int user_id, String tab) {
+		String query = "SELECT COUNT(*) FROM (SELECT * FROM " + tab + " WHERE user_id = " + user_id + ") T";
+		try {
+			ResultSet resultSet = statement.executeQuery(query);
+
+			while (resultSet != null && resultSet.next()) {
+				return resultSet.getInt(1) == 1;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return false;
+	}
+
 }
