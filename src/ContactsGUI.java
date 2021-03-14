@@ -13,14 +13,16 @@ import java.util.HashMap;
 import com.github.lgooddatepicker.components.DatePicker;
 
 public class ContactsGUI {
+    protected static Color darkGray = new Color(64,64,64);
     private JFrame window, newContactWindow;
-    private JPanel topPanel, leftPanel, rightPanel, tabPanel, contactListPanel, newContactTopPanel;
+    private Panel topPanel, leftPanel, rightPanel, tabPanel, contactListPanel, newContactTopPanel;
     private DBConnection connection;
-    private HashMap<JButton, Integer> buttonMap;
+    private HashMap<ContactEntryButton, Integer> buttonMap;
     JScrollPane contactListScrollPane;
     private JTextField nameTextField, emailTextField, addressTextField, phoneNumberTextField, notesTextField;
     private JCheckBox isFavorite, isFamily, isFriend;
     private DatePicker birthdayPicker;
+    private String tabSelected = "Contacts";
 
 
     public ContactsGUI() {
@@ -38,9 +40,9 @@ public class ContactsGUI {
         window.setVisible(true);
     }
 
-    //Main Panel (Left Panel + Right Panel)
     private void createPanels() {
-        topPanel = new JPanel(new GridLayout(1, 2));
+        topPanel = new Panel();
+        topPanel.setLayout(new GridLayout(1, 2));
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         createLeftPanel();
         topPanel.add(leftPanel);
@@ -48,68 +50,53 @@ public class ContactsGUI {
         topPanel.add(rightPanel);
     }
 
-    //Leftmost Panel + Contacts List Panel
     private void createLeftPanel() {
-        leftPanel = new JPanel(new GridLayout(1, 2));
+        leftPanel = new Panel();
+        leftPanel.setLayout(new BorderLayout());
         createTabPanel();
-        leftPanel.add(tabPanel);
+        leftPanel.add(tabPanel, BorderLayout.WEST);
         createContactListPanel();
-        leftPanel.add(contactListScrollPane);
+        leftPanel.add(contactListScrollPane, BorderLayout.CENTER);
     }
     
-    //Leftmost Panel;
     private void createTabPanel() {
-        tabPanel = new JPanel();
-        tabPanel.setBorder(BorderFactory.createEtchedBorder());
+        tabPanel = new Panel();
+        tabPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
         tabPanel.setLayout(new BoxLayout(tabPanel, BoxLayout.Y_AXIS));
 
-        JPanel tabLabelPanel = new JPanel();
+        ButtonGroup tabsGroup = new ButtonGroup();
+
+        Panel tabLabelPanel = new Panel();
         tabLabelPanel.setLayout(new GridLayout(4, 1));
 
         TabButton allContactsTab = new TabButton("All Contacts");
-//        allContactsTab.setSelected(true);
+        allContactsTab.setSelected(true);
+        tabsGroup.add(allContactsTab);
         tabLabelPanel.add(allContactsTab);
-        allContactsTab.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				reloadContactListPanel("Contacts");
-			}
-        });
+        allContactsTab.addActionListener(e -> { tabSelected = "Contacts"; reloadContactListPanel(); });
 
         TabButton favoritesTab = new TabButton("Favorites");
+        tabsGroup.add(favoritesTab);
         tabLabelPanel.add(favoritesTab);
-        favoritesTab.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				reloadContactListPanel("Favorites");
-			}
-        });
-        
+        favoritesTab.addActionListener(e -> { tabSelected = "Favorites"; reloadContactListPanel(); });
 
         TabButton familyTab = new TabButton("Family");
+        tabsGroup.add(familyTab);
         tabLabelPanel.add(familyTab);
-        familyTab.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				reloadContactListPanel("Family");
-			}
-        });
+        familyTab.addActionListener(e -> { tabSelected = "Family"; reloadContactListPanel(); });
 
         TabButton friendsTab = new TabButton("Friends");
+        tabsGroup.add(friendsTab);
         tabLabelPanel.add(friendsTab);
-        friendsTab.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				reloadContactListPanel("Friends");
-			}
-        });
-
+        friendsTab.addActionListener(e -> { tabSelected = "Friends"; reloadContactListPanel(); });
 
         tabPanel.add(tabLabelPanel);
-        tabPanel.add(Box.createVerticalGlue());
+        tabPanel.add(Box.createVerticalStrut(300));
 
         JButton addContactButton = new JButton("+");
         addContactButton.setToolTipText("New Contact");
+        addContactButton.setFont(new Font("Courier",Font.PLAIN,18));
+        addContactButton.setForeground(darkGray);
         addContactButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         addContactButton.addActionListener(new ActionListener() {
@@ -121,37 +108,31 @@ public class ContactsGUI {
         tabPanel.add(addContactButton);
     }
     
-    //Contacts List Panel
     private void createContactListPanel() {
-        contactListPanel = new JPanel();
+        contactListPanel = new Panel();
         contactListPanel.setBorder(BorderFactory.createEtchedBorder());
         contactListPanel.setLayout(new BoxLayout(contactListPanel, BoxLayout.Y_AXIS));
 
         contactListScrollPane = new JScrollPane(contactListPanel);
         contactListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        reloadContactListPanel("Contacts");
+        reloadContactListPanel();
     }
     
-    public void reloadContactListPanel(String tab)  {
-        // Clear all components
+    public void reloadContactListPanel()  {
     	contactListPanel.removeAll();
     	contactListPanel.repaint();
     	contactListPanel.revalidate();
 
-    	// Initialize buttonMap
         buttonMap = new HashMap<>();
-
-        // Fetch data from database
-        ResultSet contactListResultSet = connection.getContactListResultSet(tab);
-
-        // Display data
+        ResultSet contactListResultSet = connection.getContactListResultSet(tabSelected);
         if (contactListResultSet != null) {
             try {
                 while (contactListResultSet.next()) {
                     int user_id = contactListResultSet.getInt(1);
                     String name = contactListResultSet.getString(2);
-                    JButton button = new JButton(name);
+                    ContactEntryButton button = new ContactEntryButton();
+                    button.setText(name);
                     button.setBorderPainted(false);
                     buttonMap.put(button, user_id);
                     contactListPanel.add(button);
@@ -189,7 +170,6 @@ public class ContactsGUI {
                           } else {
                               isFriend.setSelected(false);
                           }
-
                         }
                     });
                 }
@@ -199,13 +179,12 @@ public class ContactsGUI {
         }
     }
     
-    //Right Panel
     private void createRightPanel() {
-        rightPanel = new JPanel();
+        rightPanel = new Panel();
         rightPanel.setBorder(BorderFactory.createEtchedBorder());
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
-        JPanel namePanel = new JPanel();
+        Panel namePanel = new Panel();
         namePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         nameTextField = new JTextField(20);
         nameTextField.setEditable(false);
@@ -215,7 +194,7 @@ public class ContactsGUI {
         namePanel.add(nameTextField);
         rightPanel.add(namePanel);
 
-        JPanel phoneNumberPanel = new JPanel();
+        Panel phoneNumberPanel = new Panel();
         phoneNumberPanel.add(new JLabel("Phone Number:"));
         phoneNumberTextField = new JTextField(20);
         phoneNumberTextField.setEditable(false);
@@ -224,7 +203,7 @@ public class ContactsGUI {
         phoneNumberPanel.add(phoneNumberTextField);
         rightPanel.add(phoneNumberPanel);
 
-        JPanel emailPanel = new JPanel();
+        Panel emailPanel = new Panel();
         emailPanel.add(new JLabel("Email: "));
         emailTextField = new JTextField(20);
         emailTextField.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -234,13 +213,13 @@ public class ContactsGUI {
         emailPanel.add(emailTextField);
         rightPanel.add(emailPanel);
 
-        JPanel birthdayPanel = new JPanel();
+        Panel birthdayPanel = new Panel();
         birthdayPanel.add(new JLabel("Birthday"));
         birthdayPicker = new DatePicker();
         birthdayPanel.add(birthdayPicker);
         rightPanel.add(birthdayPanel);
 
-        JPanel addressPanel = new JPanel();
+        Panel addressPanel = new Panel();
         addressPanel.add(new JLabel("Address:"));
         addressTextField = new JTextField(20);
         addressTextField.setBackground(new Color(238, 238, 238));
@@ -249,7 +228,7 @@ public class ContactsGUI {
         addressPanel.add(addressTextField);
         rightPanel.add(addressPanel);
 
-        JPanel notesPanel = new JPanel();
+        Panel notesPanel = new Panel();
         notesPanel.add(new JLabel("Notes:"));
         notesTextField = new JTextField(20);
         notesTextField.setBackground(new Color(238, 238, 238));
@@ -258,7 +237,7 @@ public class ContactsGUI {
         notesPanel.add(notesTextField);
         rightPanel.add(notesPanel);
 
-        JPanel checkBoxPanel = new JPanel();
+        Panel checkBoxPanel = new Panel();
         checkBoxPanel.add(new JLabel("Favorite"));
         isFavorite = new JCheckBox();
         isFavorite.setSelected(false);
@@ -282,15 +261,13 @@ public class ContactsGUI {
         rightPanel.add(checkBoxPanel);
     }
     
-    //Add Button Action Listener
     public void addContactActionPerformed(ActionEvent e) {
         newContactWindow = new JFrame();
         createNewContactTopPanel();
     }
     
-    //Add new contact
     public void createNewContactTopPanel() {
-        newContactTopPanel = new JPanel();
+        newContactTopPanel = new Panel();
         newContactWindow.setContentPane(newContactTopPanel);
         newContactWindow.setSize(500, 500);
         newContactWindow.setTitle("New Contact");
