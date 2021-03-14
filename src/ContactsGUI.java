@@ -4,9 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import com.github.lgooddatepicker.components.DatePicker;
 
 public class ContactsGUI {
     private JFrame window, newContactWindow;
@@ -17,6 +21,7 @@ public class ContactsGUI {
     private JTextField nameTextField, emailTextField, addressTextField, phoneNumberTextField, birthdayMonthTextField,
             birthdayDayTextField, birthdayYearTextField, notesTextField;
     private JCheckBox isFavorite, isFamily, isFriend;
+    private DatePicker birthdayPicker;
 
 
     public ContactsGUI() {
@@ -160,6 +165,9 @@ public class ContactsGUI {
                                 while (contactInfoResultSet.next()) {
                                     phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
                                     emailTextField.setText((contactInfoResultSet.getString("email")));
+                                    Date birthday = contactInfoResultSet.getDate("birthday");
+                                    System.out.println(birthday);
+                                    birthdayPicker.setDate(birthday.toLocalDate());
                                     addressTextField.setText(contactInfoResultSet.getString("address"));
                                     notesTextField.setText(contactInfoResultSet.getString("notes"));
                                 }
@@ -210,26 +218,33 @@ public class ContactsGUI {
         emailPanel.add(emailTextField);
         rightPanel.add(emailPanel);
 
+//        JPanel birthdayPanel = new JPanel();
+//        birthdayPanel.add(new JLabel("Birthday"));
+//        birthdayMonthTextField = new JTextField(2);
+//        birthdayMonthTextField.setBackground(new Color(238, 238, 238));
+//        birthdayMonthTextField.setEditable(false);
+//        birthdayMonthTextField.setBorder(null);
+//        birthdayPanel.add(birthdayMonthTextField);
+//        birthdayPanel.add(new JLabel("-"));
+//        birthdayDayTextField = new JTextField(2);
+//        birthdayDayTextField.setBackground(new Color(238, 238, 238));
+//        birthdayDayTextField.setEditable(false);
+//        birthdayDayTextField.setBorder(null);
+//        birthdayPanel.add(birthdayDayTextField);
+//        birthdayPanel.add(new JLabel("-"));
+//        birthdayYearTextField = new JTextField(4);
+//        birthdayYearTextField.setBackground(new Color(238, 238, 238));
+//        birthdayYearTextField.setEditable(false);
+//        birthdayYearTextField.setBorder(null);
+//        birthdayPanel.add(birthdayYearTextField);
+//        rightPanel.add(birthdayPanel);
+
         JPanel birthdayPanel = new JPanel();
         birthdayPanel.add(new JLabel("Birthday"));
-        birthdayMonthTextField = new JTextField(2);
-        birthdayMonthTextField.setBackground(new Color(238, 238, 238));
-        birthdayMonthTextField.setEditable(false);
-        birthdayMonthTextField.setBorder(null);
-        birthdayPanel.add(birthdayMonthTextField);
-        birthdayPanel.add(new JLabel("-"));
-        birthdayDayTextField = new JTextField(2);
-        birthdayDayTextField.setBackground(new Color(238, 238, 238));
-        birthdayDayTextField.setEditable(false);
-        birthdayDayTextField.setBorder(null);
-        birthdayPanel.add(birthdayDayTextField);
-        birthdayPanel.add(new JLabel("-"));
-        birthdayYearTextField = new JTextField(4);
-        birthdayYearTextField.setBackground(new Color(238, 238, 238));
-        birthdayYearTextField.setEditable(false);
-        birthdayYearTextField.setBorder(null);
-        birthdayPanel.add(birthdayYearTextField);
+        birthdayPicker = new DatePicker();
+        birthdayPanel.add(birthdayPicker);
         rightPanel.add(birthdayPanel);
+
 
         JPanel addressPanel = new JPanel();
         addressPanel.add(new JLabel("Address:"));
@@ -250,12 +265,23 @@ public class ContactsGUI {
         rightPanel.add(notesPanel);
 
         JPanel checkBoxPanel = new JPanel();
+        checkBoxPanel.add(new JLabel("Favorite"));
         isFavorite = new JCheckBox();
         isFavorite.setSelected(false);
+        isFavorite.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (!isFavorite.isSelected()) {
+
+                }
+            }
+        });
         checkBoxPanel.add(isFavorite);
+        checkBoxPanel.add(new JLabel("Family"));
         isFamily = new JCheckBox();
         isFamily.setSelected(false);
         checkBoxPanel.add(isFamily);
+        checkBoxPanel.add(new JLabel("Friend"));
         isFriend = new JCheckBox();
         isFriend.setSelected(false);
         checkBoxPanel.add(isFriend);
