@@ -8,8 +8,6 @@ public class TabButton extends JRadioButton {
         super(text);
         this.setFont(new Font("Courier",Font.PLAIN,18));
         this.setForeground(ContactsGUI.darkGray);
-//        this.setBorder(BorderFactory.createEtchedBorder());
-
     }
 //
 //    protected void paintComponent(Graphics g) {

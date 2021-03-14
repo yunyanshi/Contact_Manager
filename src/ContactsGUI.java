@@ -1,6 +1,7 @@
 // This is another test.
 // This is the third test.
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,7 +62,7 @@ public class ContactsGUI {
     
     private void createTabPanel() {
         tabPanel = new Panel();
-        tabPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        tabPanel.setBorder(BorderFactory.createEtchedBorder());
         tabPanel.setLayout(new BoxLayout(tabPanel, BoxLayout.Y_AXIS));
 
         ButtonGroup tabsGroup = new ButtonGroup();
@@ -110,11 +111,12 @@ public class ContactsGUI {
     
     private void createContactListPanel() {
         contactListPanel = new Panel();
-        contactListPanel.setBorder(BorderFactory.createEtchedBorder());
-        contactListPanel.setLayout(new BoxLayout(contactListPanel, BoxLayout.Y_AXIS));
+        contactListPanel.setBorder(new EmptyBorder(0, 10, 0, 10));
+        contactListPanel.setLayout(new GridLayout(0, 1));
 
         contactListScrollPane = new JScrollPane(contactListPanel);
         contactListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        contactListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         reloadContactListPanel();
     }
@@ -131,44 +133,43 @@ public class ContactsGUI {
                 while (contactListResultSet.next()) {
                     int user_id = contactListResultSet.getInt(1);
                     String name = contactListResultSet.getString(2);
-                    ContactEntryButton button = new ContactEntryButton();
-                    button.setText(name);
-                    button.setBorderPainted(false);
+                    ContactEntryButton button = new ContactEntryButton(name);
                     buttonMap.put(button, user_id);
+
                     contactListPanel.add(button);
                     button.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
+
+
                             ResultSet contactInfoResultSet = connection.getContactInfoResultSet(user_id);
                             nameTextField.setText(name);
-                            if (contactListResultSet != null) {
-                                try {
-                                    while (contactInfoResultSet.next()) {
-                                        phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
-                                        emailTextField.setText((contactInfoResultSet.getString("email")));
-                                        Date birthday = contactInfoResultSet.getDate("birthday");
-                                        birthdayPicker.setDate(birthday.toLocalDate());
-                                        addressTextField.setText(contactInfoResultSet.getString("address"));
-                                        notesTextField.setText(contactInfoResultSet.getString("notes"));
-                                    }
-                                } catch (SQLException throwables) {
-                                    throwables.printStackTrace();
+                            try {
+                                while (contactInfoResultSet.next()) {
+                                    phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
+                                    emailTextField.setText((contactInfoResultSet.getString("email")));
+                                    Date birthday = contactInfoResultSet.getDate("birthday");
+                                    birthdayPicker.setDate(birthday.toLocalDate());
+                                    addressTextField.setText(contactInfoResultSet.getString("address"));
+                                    notesTextField.setText(contactInfoResultSet.getString("notes"));
                                 }
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
                             }
-                          if (connection.ifBelongs(user_id, "Favorites")) {
-                              isFavorite.setSelected(true);
-                          } else {
-                              isFavorite.setSelected(false);
-                          }
-                          if (connection.ifBelongs(user_id, "Family")) {
-                              isFamily.setSelected(true);
-                          } else {
-                              isFamily.setSelected(false);
-                          }
-                          if (connection.ifBelongs(user_id, "Friends")) {
-                              isFriend.setSelected(true);
-                          } else {
-                              isFriend.setSelected(false);
+                            if (connection.ifBelongs(user_id, "Favorites")) {
+                                isFavorite.setSelected(true);
+                            } else {
+                                isFavorite.setSelected(false);
+                            }
+                            if (connection.ifBelongs(user_id, "Family")) {
+                                isFamily.setSelected(true);
+                            } else {
+                                isFamily.setSelected(false);
+                            }
+                            if (connection.ifBelongs(user_id, "Friends")) {
+                                isFriend.setSelected(true);
+                            } else {
+                                isFriend.setSelected(false);
                           }
                         }
                     });
