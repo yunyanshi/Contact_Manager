@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.github.lgooddatepicker.components.DatePicker;
+import com.mysql.cj.jdbc.JdbcConnection;
 
 
 public class ContactsGUI {
@@ -30,7 +31,6 @@ public class ContactsGUI {
     private DatePicker birthdayPicker;
     private String tabSelected = "Contacts";
     JTextField nameTextField;
-
 
     public ContactsGUI() {
         connection = new DBConnection();
@@ -55,11 +55,7 @@ public class ContactsGUI {
         topPanel.add(leftPanel);
         createRightPanel();
         topPanel.add(rightPanel);
-        if (buttonMap.size() > 0) {
-            Iterator<Map.Entry<ContactEntryButton, Integer>> iterator = buttonMap.entrySet().iterator();
-            Map.Entry<ContactEntryButton, Integer> entry = iterator.next();
-            reloadRightPanel(7);
-        }
+        reloadContactListPanel();
     }
 
     private void createLeftPanel() {
@@ -128,8 +124,6 @@ public class ContactsGUI {
         contactListScrollPane = new JScrollPane(contactListPanel);
         contactListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         contactListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        reloadContactListPanel();
     }
     
     public void reloadContactListPanel() {
@@ -159,6 +153,7 @@ public class ContactsGUI {
                 throwables.printStackTrace();
             }
         }
+        reloadRightPanel();
     }
     
     private void createRightPanel() {
@@ -267,10 +262,114 @@ public class ContactsGUI {
     
     public void createNewContactTopPanel() {
         newContactTopPanel = new Panel();
+        newContactTopPanel.setLayout(new GridLayout(0, 1));
+
+        Panel namePanel = new Panel();
+        namePanel.setLayout(new BorderLayout());
+        Label nameLabel = new Label("Name: ");
+        namePanel.add(nameLabel, BorderLayout.WEST);
+        JTextField nameTextField = new JTextField();
+        namePanel.add(nameTextField, BorderLayout.CENTER);
+        newContactTopPanel.add(namePanel);
+
+        Panel phonePanel = new Panel();
+        phonePanel.setLayout(new BorderLayout());
+        Label phoneLabel = new Label("Phone Number: ");
+        phonePanel.add(phoneLabel, BorderLayout.WEST);
+        JTextField phoneTextField = new JTextField();
+        phonePanel.add(phoneTextField, BorderLayout.CENTER);
+        newContactTopPanel.add(phonePanel);
+
+        Panel emailPanel = new Panel();
+        emailPanel.setLayout(new BorderLayout());
+        Label emailLabel = new Label("Email: ");
+        emailPanel.add(emailLabel, BorderLayout.WEST);
+        JTextField emailTextField = new JTextField();
+        emailPanel.add(emailTextField, BorderLayout.CENTER);
+        newContactTopPanel.add(emailPanel);
+
+        Panel dobPanel = new Panel();
+        DatePicker birthdayPicker = new DatePicker();
+        dobPanel.add(birthdayPicker);
+        newContactTopPanel.add(dobPanel);
+
+        Panel addressPanel = new Panel();
+        addressPanel.setLayout(new BorderLayout());
+        Label addressLabel = new Label("Address: ");
+        addressPanel.add(addressLabel, BorderLayout.WEST);
+        JTextField addressTextField = new JTextField();
+        addressPanel.add(addressTextField, BorderLayout.CENTER);
+        newContactTopPanel.add(addressPanel);
+
+        Panel notesPanel = new Panel();
+        notesPanel.setLayout(new BorderLayout());
+        Label notesLabel = new Label("Notes: ");
+        notesPanel.add(notesLabel, BorderLayout.WEST);
+        JTextField notesTextField = new JTextField();
+        notesPanel.add(notesTextField, BorderLayout.CENTER);
+        newContactTopPanel.add(notesPanel);
+
+        Panel checkBoxPanel = new Panel();
+        JCheckBox isFavorite = new JCheckBox("Favorite");
+        isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFavorite.setForeground(Color.DARK_GRAY);
+        isFavorite.setSelected(false);
+        checkBoxPanel.add(isFavorite);
+        JCheckBox isFamily = new JCheckBox("Family");
+        isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFamily.setForeground(Color.DARK_GRAY);
+        isFamily.setSelected(false);
+        checkBoxPanel.add(isFamily);
+        JCheckBox isFriend = new JCheckBox("Friend");
+        isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFriend.setForeground(Color.DARK_GRAY);
+        isFriend.setSelected(false);
+        checkBoxPanel.add(isFriend);
+        newContactTopPanel.add(checkBoxPanel);
+
+        Panel cancelOrConfirmPanel = new Panel();
+        JButton cancelButton = new JButton("Cancel");
+        cancelOrConfirmPanel.add(cancelButton);
+        cancelButton.addActionListener(e -> newContactWindow.dispose());
+        JButton confirmButton = new JButton("Confirm");
+        cancelOrConfirmPanel.add(confirmButton);
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (nameTextField.getText().length() == 0) {
+                    JOptionPane.showMessageDialog(newContactWindow, "Please enter the contact name!",
+                            "Invalid New Contact Information", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    int newId = connection.createNewContact(nameTextField.getText(), phoneTextField.getText(),
+                            birthdayPicker.getDate(), emailTextField.getText(),addressTextField.getText(),
+                            notesTextField.getText());
+                    reloadContactListPanel();
+
+                }
+            }
+        });
+
+        newContactTopPanel.add(cancelOrConfirmPanel);
+
+
+
+
+
+
+
         newContactWindow.setContentPane(newContactTopPanel);
         newContactWindow.setSize(500, 500);
         newContactWindow.setTitle("New Contact");
         newContactWindow.setVisible(true);
+    }
+
+    public void reloadRightPanel() {
+        if (buttonMap.size() > 0) {
+            Iterator<Map.Entry<ContactEntryButton, Integer>> iterator = buttonMap.entrySet().iterator();
+            Map.Entry<ContactEntryButton, Integer> entry = iterator.next();
+            System.out.println(entry.getValue());
+            reloadRightPanel(entry.getValue());
+        }
     }
 
     public void reloadRightPanel(int user_id) {
@@ -289,21 +388,9 @@ public class ContactsGUI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if (connection.ifBelongs(user_id, "Favorites")) {
-            isFavorite.setSelected(true);
-        } else {
-            isFavorite.setSelected(false);
-        }
-        if (connection.ifBelongs(user_id, "Family")) {
-            isFamily.setSelected(true);
-        } else {
-            isFamily.setSelected(false);
-        }
-        if (connection.ifBelongs(user_id, "Friends")) {
-            isFriend.setSelected(true);
-        } else {
-            isFriend.setSelected(false);
-        }
+        isFavorite.setSelected(connection.ifBelongs(user_id, "Favorites"));
+        isFamily.setSelected(connection.ifBelongs(user_id, "Family"));
+        isFriend.setSelected(connection.ifBelongs(user_id, "Friends"));
     }
 
     public static void main(String[] args) {

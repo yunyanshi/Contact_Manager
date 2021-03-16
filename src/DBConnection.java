@@ -2,6 +2,7 @@ import javax.xml.transform.Result;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.HashMap;
 
 public class DBConnection {
@@ -150,6 +151,27 @@ public class DBConnection {
 			throwables.printStackTrace();
 		}
 		return false;
+	}
+
+
+	public int getNextId() {
+		String query = "SELECT MAX(user_id) from Contacts";
+		try {
+			ResultSet resultSet = statement.executeQuery(query);
+
+			while (resultSet != null && resultSet.next()) {
+				return resultSet.getInt(1) + 1;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return 0;
+	}
+
+	public int createNewContact(String name, String phone, LocalDate dob, String email, String address, String notes) {
+		int id = getNextId();
+
+		return id;
 	}
 
 }
