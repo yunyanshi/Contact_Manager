@@ -17,6 +17,7 @@ import java.util.Map;
 
 import com.github.lgooddatepicker.components.DatePicker;
 
+
 public class ContactsGUI {
     protected static Color darkGray = new Color(64,64,64);
     private JFrame window, newContactWindow;
@@ -198,7 +199,11 @@ public class ContactsGUI {
         birthdayPanel.setBorder(new EmptyBorder(5, 15, 45, 15));
         birthdayPanel.setLayout(new BorderLayout());
         birthdayPanel.add(new Label("Birthday: "), BorderLayout.NORTH);
+        ImageIcon dateExampleIcon = new ImageIcon("src/datepickerbutton1.png");
         birthdayPicker = new DatePicker();
+        JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
+        date_button.setText("");
+        date_button.setIcon(dateExampleIcon);
         birthdayPicker.setBackground(Color.white);
         birthdayPanel.add(birthdayPicker, BorderLayout.CENTER);
         rightPanel.add(birthdayPanel);
