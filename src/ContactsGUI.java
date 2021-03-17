@@ -1,9 +1,9 @@
-// This is another test.
-// This is the third test.
+// COEN 275 Final Project
+// Contact Manager
+// Author: Ce Pang & Yunyan Shi
+
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.xml.soap.Text;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,20 +18,19 @@ import com.github.lgooddatepicker.components.DatePicker;
 
 
 public class ContactsGUI {
-    protected static Color darkGray = new Color(64,64,64);
+    protected static final Color darkGray = new Color(64,64,64);
+    private final String[] tabs = {"Contacts", "Favorites", "Family", "Friends"};
+    private final DBConnection connection;
+
     private JFrame window, newContactWindow, newEditWindow;
     private Panel topPanel, leftPanel, rightPanel, tabPanel, contactListPanel, newContactTopPanel, newEditTopPanel;
-    private DBConnection connection;
-    private LinkedHashMap<ContactEntryButton, Integer> buttonMap;
-    JScrollPane contactListScrollPane;
+    private JScrollPane contactListScrollPane;
     private TextField  emailTextField, addressTextField, phoneNumberTextField, notesTextField, birthdayTextField;
     private JCheckBox isFavorite, isFamily, isFriend;
-    private DatePicker birthdayPicker;
-    private final String[] tabs = {"Contacts", "Favorites", "Family", "Friends"};
+    private TabButton allContactsTab, favoritesTab, familyTab, friendsTab;
+    private JTextField nameTextField;
     private String selectedTab = tabs[0];
     private int selectedUserID;
-    private TabButton allContactsTab, favoritesTab, familyTab, friendsTab;
-    JTextField nameTextField;
 
     public ContactsGUI() {
         connection = new DBConnection();
@@ -44,7 +43,7 @@ public class ContactsGUI {
         window.setContentPane(topPanel);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(1100, 700);
-        window.setTitle("Contacts");
+        window.setTitle(tabs[0]);
         window.setVisible(true);
     }
 
@@ -149,7 +148,7 @@ public class ContactsGUI {
     	contactListPanel.repaint();
     	contactListPanel.revalidate();
 
-        buttonMap = new LinkedHashMap<>();
+        LinkedHashMap<ContactEntryButton, Integer> buttonMap = new LinkedHashMap<>();
         ResultSet contactListResultSet = connection.getContactListResultSet(selectedTab);
         if (contactListResultSet != null) {
             try {
@@ -194,21 +193,21 @@ public class ContactsGUI {
         nameAndCheckBoxPanel.add(nameTextField, BorderLayout.CENTER);
 
         Panel checkBoxPanel = new Panel();
-        isFavorite = new JCheckBox("Favorite");
+        isFavorite = new JCheckBox(tabs[1]);
         isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
         isFavorite.setForeground(Color.DARK_GRAY);
         isFavorite.setSelected(false);
         isFavorite.setEnabled(false);
         checkBoxPanel.add(isFavorite);
 
-        isFamily = new JCheckBox("Family");
+        isFamily = new JCheckBox(tabs[2]);
         isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
         isFamily.setForeground(Color.DARK_GRAY);
         isFamily.setSelected(false);
         isFamily.setEnabled(false);
         checkBoxPanel.add(isFamily);
 
-        isFriend = new JCheckBox("Friend");
+        isFriend = new JCheckBox(tabs[3]);
         isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
         isFriend.setForeground(Color.DARK_GRAY);
         isFriend.setSelected(false);
@@ -279,7 +278,7 @@ public class ContactsGUI {
         editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
         JButton editButton = new JButton("Edit");
         editButton.setFont(new Font("Courier", Font.PLAIN, 16));
-        editButton.addActionListener(e -> editContactActionPerformed(e));
+        editButton.addActionListener(this::editContactActionPerformed);
         editAndDeletePanel.add(editButton);
 
         JButton deleteButton = new JButton("Delete");
@@ -367,17 +366,17 @@ public class ContactsGUI {
         newEditTopPanel.add(notesPanel);
 
         Panel checkBoxPanel = new Panel();
-        JCheckBox isFavorite = new JCheckBox("Favorite");
+        JCheckBox isFavorite = new JCheckBox(tabs[1]);
         isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
         isFavorite.setForeground(Color.DARK_GRAY);
         
         checkBoxPanel.add(isFavorite);
-        JCheckBox isFamily = new JCheckBox("Family");
+        JCheckBox isFamily = new JCheckBox(tabs[2]);
         isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
         isFamily.setForeground(Color.DARK_GRAY);
         
         checkBoxPanel.add(isFamily);
-        JCheckBox isFriend = new JCheckBox("Friend");
+        JCheckBox isFriend = new JCheckBox(tabs[3]);
         isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
         isFriend.setForeground(Color.DARK_GRAY);
     
@@ -417,15 +416,13 @@ public class ContactsGUI {
         cancelOrConfirmPanel.add(confirmButton);
         confirmButton.addActionListener(e -> {
             
-        String message = connection.updateExistContact(selectedUserID,
+        String message = connection.updateContact(selectedUserID,
                 		nameTextField.getText(), phoneTextField.getText(),emailTextField.getText(),
                         birthdayPicker.getDate(), addressTextField.getText(),
                         notesTextField.getText());
         JOptionPane.showMessageDialog(newContactWindow, message, "Successful Updates",JOptionPane.PLAIN_MESSAGE);
                 selectedTab = tabs[0];
                 allContactsTab.setSelected(true);
-                //reloadContactListPanel();
-        
                 reloadRightPanel();
                 newEditWindow.dispose();
             
@@ -533,7 +530,7 @@ public class ContactsGUI {
                 JOptionPane.showMessageDialog(newContactWindow, "Please enter the contact name!",
                         "Invalid New Contact Information", JOptionPane.WARNING_MESSAGE);
             } else {
-                int newId = connection.createNewContact(nameTextField.getText(), phoneTextField.getText(),
+                int newId = connection.createContact(nameTextField.getText(), phoneTextField.getText(),
                         birthdayPicker.getDate(), emailTextField.getText(),addressTextField.getText(),
                         notesTextField.getText());
                 if (isFavorite.isSelected()) {

@@ -53,110 +53,8 @@ public class DBConnection {
 		return resultSet;
 	}
 
-	
-	public String addNewContacts(String name, String phone_number, String email, String dob, String address,
-			String notes) {
-
-		CallableStatement callSt = null;
-		try {
-			callSt = connection.prepareCall("{?= call addNewContacts(?,?,?,?,?,?)}");
-			callSt.registerOutParameter(1, Types.VARCHAR);
-			callSt.setString(2, name);
-			callSt.setString(3, phone_number);
-			callSt.setString(4, email);
-			java.util.Date date = sdf.parse(dob);
-			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-			callSt.setDate(5, sqlDate);
-			callSt.setString(6, address);
-			callSt.setString(7, notes);
-			callSt.execute();
-			connection.close();
-			callSt.close();
-			return callSt.getString(1);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				if (callSt != null)
-					callSt.close();
-				if (connection != null)
-					connection.close();
-			} catch (Exception ex) {
-			}
-		}
-		return null;
-	}
-
-	public String updateExistContact(int user_id, String name, String phone_number, String email, LocalDate dob,
-			String address, String notes) {
-
-		CallableStatement callSt = null;
-		try {
-			callSt = connection.prepareCall("{?= call updateExistingContact(?,?,?,?,?,?,?)}");
-			callSt.registerOutParameter(1, Types.VARCHAR);
-			callSt.setInt(2, user_id);
-			callSt.setString(3, name);
-			callSt.setString(4, phone_number);
-			callSt.setString(5, email);
-			//java.util.Date date = sdf.parse(dob);
-			//java.sql.Date sqlDate = );
-			callSt.setDate(6, Date.valueOf(dob));
-			callSt.setString(7, address);
-			callSt.setString(8, notes);
-			callSt.execute();
-			
-			return callSt.getString(1);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		return null;
-	}
-	
-	public void deleteCurrentContact(String user_id) {
-		String query = "DELETE FROM contacts WHERE user_id = " + Integer.parseInt(user_id);
-		ResultSet resultSet = null;
-		try {
-			resultSet = statement.executeQuery(query);
-		} catch (SQLException throwables) {
-			throwables.printStackTrace();
-		}	
-	}
-
-	public boolean ifBelongs(int user_id, String tab) {
-		String query = "SELECT COUNT(*) FROM (SELECT * FROM " + tab + " WHERE user_id = " + user_id + ") T";
-		try {
-			ResultSet resultSet = statement.executeQuery(query);
-
-			while (resultSet != null && resultSet.next()) {
-				return resultSet.getInt(1) == 1;
-			}
-		} catch (SQLException throwables) {
-			throwables.printStackTrace();
-		}
-		return false;
-	}
-
-
-	public int getNextId() {
-		String query = "SELECT MAX(user_id) from Contacts";
-		try {
-			ResultSet resultSet = statement.executeQuery(query);
-
-			while (resultSet != null && resultSet.next()) {
-				return resultSet.getInt(1) + 1;
-			}
-		} catch (SQLException throwables) {
-			throwables.printStackTrace();
-		}
-		return 0;
-	}
-
-	public int createNewContact(String name, String phone, LocalDate dob, String email, String address, String notes) {
+	public int createContact(String name, String phone, LocalDate dob,
+							 String email, String address, String notes) {
 		int id = getNextId();
 		String query = "INSERT INTO CONTACTS VALUES(?,?,?,?,?,?,?)";
 		try {
@@ -176,6 +74,28 @@ public class DBConnection {
 		return id;
 	}
 
+	public String updateContact(int user_id, String name, String phone,
+								String email, LocalDate dob, String address, String notes) {
+		CallableStatement callSt = null;
+		try {
+			callSt = connection.prepareCall("{?= call updateExistingContact(?,?,?,?,?,?,?)}");
+			callSt.registerOutParameter(1, Types.VARCHAR);
+			callSt.setInt(2, user_id);
+			callSt.setString(3, name);
+			callSt.setString(4, (phone.length() == 0) ? null : phone);
+			callSt.setString(5, (email.length() == 0) ? null : email);
+			callSt.setDate(6, (dob == null) ? null : Date.valueOf(dob));
+			callSt.setString(7, (address.length() == 0) ? null : address);
+			callSt.setString(8, (notes.length() == 0) ? null : notes);
+			callSt.execute();
+			
+			return callSt.getString(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+
 	public void deleteContact(int user_id) {
 		String query = "DELETE FROM CONTACTS WHERE USER_ID = " + user_id;
 		try {
@@ -183,6 +103,34 @@ public class DBConnection {
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 		}
+	}
+
+	public boolean ifBelongs(int user_id, String tab) {
+		String query = "SELECT COUNT(*) FROM (SELECT * FROM " + tab + " WHERE user_id = " + user_id + ") T";
+		try {
+			ResultSet resultSet = statement.executeQuery(query);
+
+			if (resultSet != null && resultSet.next()) {
+				return resultSet.getInt(1) == 1;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return false;
+	}
+
+	public int getNextId() {
+		String query = "SELECT MAX(user_id) from Contacts";
+		try {
+			ResultSet resultSet = statement.executeQuery(query);
+
+			if (resultSet != null && resultSet.next()) {
+				return resultSet.getInt(1) + 1;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return 0;
 	}
 
 	public void addToTab(String tab, int user_id) {
