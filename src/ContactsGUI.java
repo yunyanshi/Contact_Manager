@@ -181,17 +181,16 @@ public class ContactsGUI {
     
     private void createRightPanel() {
         rightPanel = new Panel();
-        rightPanel.setLayout(new GridLayout(0, 1));
-        rightPanel.setBorder(BorderFactory.createEtchedBorder());
+        rightPanel.setLayout(new GridLayout(4, 1));
 
         Panel nameAndCheckBoxPanel = new Panel();
-        nameAndCheckBoxPanel.setLayout(new BoxLayout(nameAndCheckBoxPanel, BoxLayout.Y_AXIS));
+        nameAndCheckBoxPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        nameAndCheckBoxPanel.setLayout(new GridLayout(2, 1));
         nameTextField = new JTextField();
         nameTextField.setFont(new Font("Courier", Font.BOLD, 22));
         nameTextField.setBorder(null);
         nameTextField.setHorizontalAlignment(JTextField.CENTER);
         nameAndCheckBoxPanel.add(nameTextField, BorderLayout.CENTER);
-
 
         Panel checkBoxPanel = new Panel();
         isFavorite = new JCheckBox("Favorite");
@@ -218,26 +217,34 @@ public class ContactsGUI {
         rightPanel.add(nameAndCheckBoxPanel);
 
         Panel phoneAndEmailAndBirthdayPanel = new Panel();
-        phoneAndEmailAndBirthdayPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
+        phoneAndEmailAndBirthdayPanel.setBorder(new EmptyBorder(0, 15, 15, 15));
         phoneAndEmailAndBirthdayPanel.setLayout(new GridLayout(3, 1));
         Panel phoneNumberPanel = new Panel();
         phoneNumberPanel.setLayout(new BorderLayout());
-        phoneNumberPanel.add(new Label("Phone Number:"), BorderLayout.WEST);
+        Label phoneLabel = new Label("Phone Number:");
+        ImageIcon phoneIcon = new ImageIcon("src/images/phone-icon.png");
+        phoneLabel.setIcon(phoneIcon);
+        phoneNumberPanel.add(phoneLabel, BorderLayout.WEST);
         phoneNumberTextField = new TextField();
         phoneNumberPanel.add(phoneNumberTextField, BorderLayout.CENTER);
         phoneAndEmailAndBirthdayPanel.add(phoneNumberPanel);
 
         Panel emailPanel = new Panel();
         emailPanel.setLayout(new BorderLayout());
-        emailPanel.add(new Label("Email: "), BorderLayout.WEST);
+        ImageIcon emailIcon = new ImageIcon("src/images/email-icon.png");
+        Label emailLabel = new Label("Email: ");
+        emailLabel.setIcon(emailIcon);
+        emailPanel.add(emailLabel, BorderLayout.WEST);
         emailTextField = new TextField();
         emailPanel.add(emailTextField, BorderLayout.CENTER);
         phoneAndEmailAndBirthdayPanel.add(emailPanel);
 
         Panel birthdayPanel = new Panel();
-        birthdayPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         birthdayPanel.setLayout(new BorderLayout());
-        birthdayPanel.add(new Label("Birthday: "), BorderLayout.WEST);
+        Label dobLabel = new Label("Birthday:");
+        ImageIcon dobIcon = new ImageIcon("src/images/dob-icon.png");
+        dobLabel.setIcon(dobIcon);
+        birthdayPanel.add(dobLabel, BorderLayout.WEST);
         birthdayTextField = new TextField();
         birthdayPanel.add(birthdayTextField, BorderLayout.CENTER);
         phoneAndEmailAndBirthdayPanel.add(birthdayPanel);
@@ -248,7 +255,10 @@ public class ContactsGUI {
         Panel addressPanel = new Panel();
         addressPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
         addressPanel.setLayout(new BorderLayout());
-        addressPanel.add(new Label("Address:"), BorderLayout.NORTH);
+        Label addressLabel = new Label("Address:");
+        ImageIcon addressIcon = new ImageIcon("src/images/home-icon.png");
+        addressLabel.setIcon(addressIcon);
+        addressPanel.add(addressLabel, BorderLayout.NORTH);
         addressTextField = new TextField();
         addressPanel.add(addressTextField, BorderLayout.CENTER);
         addressAndNotesPanel.add(addressPanel);
@@ -256,13 +266,16 @@ public class ContactsGUI {
         Panel notesPanel = new Panel();
         notesPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
         notesPanel.setLayout(new BorderLayout());
-        notesPanel.add(new Label("Notes:"),BorderLayout.NORTH);
+        Label notesLabel = new Label("Notes: ");
+        notesLabel.setIcon(new ImageIcon("src/images/notes-icon.png"));
+        notesPanel.add(notesLabel,BorderLayout.NORTH);
         notesTextField = new TextField();
         notesPanel.add(notesTextField, BorderLayout.CENTER);
         addressAndNotesPanel.add(notesPanel);
         rightPanel.add(addressAndNotesPanel);
 
         Panel editAndDeletePanel = new Panel();
+        editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
         JButton editButton = new JButton("Edit");
         editButton.setForeground(Color.DARK_GRAY);
         editButton.setFont(new Font("Courier", Font.PLAIN, 16));
@@ -312,13 +325,9 @@ public class ContactsGUI {
     	
     	newEditTopPanel = new Panel();
     	newEditTopPanel.setLayout(new GridLayout(0, 1));
-    	
-    	
+
     	ResultSet contactInfoResultSet = connection.getContactInfoResultSet(selectedUserID);
 
-        
-    	
-    	
     	Panel namePanel = new Panel();
         namePanel.setLayout(new BorderLayout());
         Label nameLabel = new Label("Name: ");
@@ -345,7 +354,7 @@ public class ContactsGUI {
 
         Panel dobPanel = new Panel();
         DatePicker birthdayPicker = new DatePicker();
-        ImageIcon dateExampleIcon = new ImageIcon("src/datepickerbutton1.png");
+        ImageIcon dateExampleIcon = new ImageIcon("src/images/datepickerbutton1.png");
         JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
         date_button.setText("");
         date_button.setIcon(dateExampleIcon);
@@ -469,7 +478,7 @@ public class ContactsGUI {
 
         Panel dobPanel = new Panel();
         DatePicker birthdayPicker = new DatePicker();
-        ImageIcon dateExampleIcon = new ImageIcon("src/datepickerbutton1.png");
+        ImageIcon dateExampleIcon = new ImageIcon("src/images/datepickerbutton1.png");
         JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
         date_button.setText("");
         date_button.setIcon(dateExampleIcon);
@@ -539,8 +548,6 @@ public class ContactsGUI {
         newContactWindow.setTitle("New Contact");
         newContactWindow.setVisible(true);
     }
-    
-    
 
     public void reloadRightPanel() {
         ResultSet contactInfoResultSet = connection.getContactInfoResultSet(selectedUserID);
