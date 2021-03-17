@@ -1,7 +1,9 @@
 // This is another test.
 // This is the third test.
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.xml.soap.Text;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +24,7 @@ public class ContactsGUI {
     private DBConnection connection;
     private LinkedHashMap<ContactEntryButton, Integer> buttonMap;
     JScrollPane contactListScrollPane;
-    private TextField  emailTextField, addressTextField, phoneNumberTextField, notesTextField;
+    private TextField  emailTextField, addressTextField, phoneNumberTextField, notesTextField, birthdayTextField;
     private JCheckBox isFavorite, isFamily, isFriend;
     private DatePicker birthdayPicker;
     private final String[] tabs = {"Contacts", "Favorites", "Family", "Friends"};
@@ -182,85 +184,83 @@ public class ContactsGUI {
         rightPanel.setLayout(new GridLayout(0, 1));
         rightPanel.setBorder(BorderFactory.createEtchedBorder());
 
-        Panel namePanel = new Panel();
-        namePanel.setBorder(new EmptyBorder(5, 15, 15, 15));
-        namePanel.setLayout(new BorderLayout());
+        Panel nameAndCheckBoxPanel = new Panel();
+        nameAndCheckBoxPanel.setLayout(new BoxLayout(nameAndCheckBoxPanel, BoxLayout.Y_AXIS));
         nameTextField = new JTextField();
         nameTextField.setFont(new Font("Courier", Font.BOLD, 22));
         nameTextField.setBorder(null);
         nameTextField.setHorizontalAlignment(JTextField.CENTER);
-        namePanel.add(nameTextField, BorderLayout.CENTER);
-        rightPanel.add(namePanel);
+        nameAndCheckBoxPanel.add(nameTextField, BorderLayout.CENTER);
 
-        Panel phoneAndEmailPanel = new Panel();
-        phoneAndEmailPanel.setBorder(new EmptyBorder(0, 15, 15, 15));
-        phoneAndEmailPanel.setLayout(new GridLayout(2, 1));
-        Panel phoneNumberPanel = new Panel();
-        phoneNumberPanel.setLayout(new BorderLayout());
-        phoneNumberPanel.add(new Label("Phone Number:"), BorderLayout.WEST);
-        phoneNumberTextField = new TextField();
 
-        phoneNumberPanel.add(phoneNumberTextField, BorderLayout.CENTER);
-        phoneAndEmailPanel.add(phoneNumberPanel);
-
-        Panel emailPanel = new Panel();
-        emailPanel.setLayout(new BorderLayout());
-        emailPanel.add(new Label("Email: "), BorderLayout.WEST);
-        emailTextField = new TextField();
-        emailPanel.add(emailTextField, BorderLayout.CENTER);
-        phoneAndEmailPanel.add(emailPanel);
-        rightPanel.add(phoneAndEmailPanel);
-
-        Panel birthdayPanel = new Panel();
-        birthdayPanel.setBorder(new EmptyBorder(5, 15, 45, 15));
-        birthdayPanel.setLayout(new BorderLayout());
-        birthdayPanel.add(new Label("Birthday: "), BorderLayout.NORTH);
-        ImageIcon dateExampleIcon = new ImageIcon("src/datepickerbutton1.png");
-        birthdayPicker = new DatePicker();
-        JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
-        date_button.setText("");
-        date_button.setIcon(dateExampleIcon);
-        birthdayPicker.setBackground(Color.white);
-        birthdayPanel.add(birthdayPicker, BorderLayout.CENTER);
-        rightPanel.add(birthdayPanel);
-
-        Panel addressPanel = new Panel();
-        addressPanel.setBorder(new EmptyBorder(0, 15, 10, 15));
-        addressPanel.setLayout(new BorderLayout());
-        addressPanel.add(new Label("Address:"), BorderLayout.NORTH);
-        addressTextField = new TextField();
-        addressPanel.add(addressTextField, BorderLayout.CENTER);
-        rightPanel.add(addressPanel);
-
-        Panel notesPanel = new Panel();
-        notesPanel.setBorder(new EmptyBorder(0, 15, 10, 15));
-        notesPanel.setLayout(new BorderLayout());
-        notesPanel.add(new Label("Notes:"),BorderLayout.NORTH);
-        notesTextField = new TextField();
-        notesPanel.add(notesTextField, BorderLayout.CENTER);
-        rightPanel.add(notesPanel);
-
-        Panel bottomPanel = new Panel();
-        bottomPanel.setLayout(new GridLayout(2, 1));
         Panel checkBoxPanel = new Panel();
         isFavorite = new JCheckBox("Favorite");
         isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
         isFavorite.setForeground(Color.DARK_GRAY);
         isFavorite.setSelected(false);
+        isFavorite.setEnabled(false);
         checkBoxPanel.add(isFavorite);
 
         isFamily = new JCheckBox("Family");
         isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
         isFamily.setForeground(Color.DARK_GRAY);
         isFamily.setSelected(false);
+        isFamily.setEnabled(false);
         checkBoxPanel.add(isFamily);
 
         isFriend = new JCheckBox("Friend");
         isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
         isFriend.setForeground(Color.DARK_GRAY);
         isFriend.setSelected(false);
+        isFriend.setEnabled(false);
         checkBoxPanel.add(isFriend);
-        bottomPanel.add(checkBoxPanel);
+        nameAndCheckBoxPanel.add(checkBoxPanel, BorderLayout.SOUTH);
+        rightPanel.add(nameAndCheckBoxPanel);
+
+        Panel phoneAndEmailAndBirthdayPanel = new Panel();
+        phoneAndEmailAndBirthdayPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
+        phoneAndEmailAndBirthdayPanel.setLayout(new GridLayout(3, 1));
+        Panel phoneNumberPanel = new Panel();
+        phoneNumberPanel.setLayout(new BorderLayout());
+        phoneNumberPanel.add(new Label("Phone Number:"), BorderLayout.WEST);
+        phoneNumberTextField = new TextField();
+        phoneNumberPanel.add(phoneNumberTextField, BorderLayout.CENTER);
+        phoneAndEmailAndBirthdayPanel.add(phoneNumberPanel);
+
+        Panel emailPanel = new Panel();
+        emailPanel.setLayout(new BorderLayout());
+        emailPanel.add(new Label("Email: "), BorderLayout.WEST);
+        emailTextField = new TextField();
+        emailPanel.add(emailTextField, BorderLayout.CENTER);
+        phoneAndEmailAndBirthdayPanel.add(emailPanel);
+
+        Panel birthdayPanel = new Panel();
+        birthdayPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+        birthdayPanel.setLayout(new BorderLayout());
+        birthdayPanel.add(new Label("Birthday: "), BorderLayout.WEST);
+        birthdayTextField = new TextField();
+        birthdayPanel.add(birthdayTextField, BorderLayout.CENTER);
+        phoneAndEmailAndBirthdayPanel.add(birthdayPanel);
+        rightPanel.add(phoneAndEmailAndBirthdayPanel);
+
+        Panel addressAndNotesPanel = new Panel();
+        addressAndNotesPanel.setLayout(new GridLayout(2, 1));
+        Panel addressPanel = new Panel();
+        addressPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
+        addressPanel.setLayout(new BorderLayout());
+        addressPanel.add(new Label("Address:"), BorderLayout.NORTH);
+        addressTextField = new TextField();
+        addressPanel.add(addressTextField, BorderLayout.CENTER);
+        addressAndNotesPanel.add(addressPanel);
+
+        Panel notesPanel = new Panel();
+        notesPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
+        notesPanel.setLayout(new BorderLayout());
+        notesPanel.add(new Label("Notes:"),BorderLayout.NORTH);
+        notesTextField = new TextField();
+        notesPanel.add(notesTextField, BorderLayout.CENTER);
+        addressAndNotesPanel.add(notesPanel);
+        rightPanel.add(addressAndNotesPanel);
 
         Panel editAndDeletePanel = new Panel();
         JButton editButton = new JButton("Edit");
@@ -286,8 +286,8 @@ public class ContactsGUI {
             }
         });
         editAndDeletePanel.add(deleteButton);
-        bottomPanel.add(editAndDeletePanel);
-        rightPanel.add(bottomPanel);
+
+        rightPanel.add(editAndDeletePanel);
     }
     
     public void addContactActionPerformed(ActionEvent e) {
@@ -405,10 +405,13 @@ public class ContactsGUI {
                 phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
                 emailTextField.setText((contactInfoResultSet.getString("email")));
                 Date birthday = contactInfoResultSet.getDate("birthday");
+//                if (birthday != null) {
+//                    birthdayPicker.setDate(birthday.toLocalDate());
+//                } else {
+//                    birthdayPicker.clear();
+//                }
                 if (birthday != null) {
-                    birthdayPicker.setDate(birthday.toLocalDate());
-                } else {
-                    birthdayPicker.clear();
+                    birthdayTextField.setText(birthday.toString());
                 }
                 addressTextField.setText(contactInfoResultSet.getString("address"));
                 notesTextField.setText(contactInfoResultSet.getString("notes"));
