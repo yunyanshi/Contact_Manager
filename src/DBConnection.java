@@ -67,33 +67,29 @@ public class DBConnection {
 			preparedStatement.setString(6, (address.length() == 0) ? null : address);
 			preparedStatement.setString(7, (notes.length() == 0) ? null : notes);
 			preparedStatement.executeUpdate();
-
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 		}
 		return id;
 	}
 
-	public String updateContact(int user_id, String name, String phone,
+	public void updateContact(int user_id, String name, String phone,
 								String email, LocalDate dob, String address, String notes) {
-		CallableStatement callSt = null;
+		String query = "UPDATE CONTACTS SET name = ?, phone_number = ?, email = ?, " +
+				"birthday = ?, address = ?, notes = ? WHERE user_id = ? ";
 		try {
-			callSt = connection.prepareCall("{?= call updateExistingContact(?,?,?,?,?,?,?)}");
-			callSt.registerOutParameter(1, Types.VARCHAR);
-			callSt.setInt(2, user_id);
-			callSt.setString(3, name);
-			callSt.setString(4, (phone.length() == 0) ? null : phone);
-			callSt.setString(5, (email.length() == 0) ? null : email);
-			callSt.setDate(6, (dob == null) ? null : Date.valueOf(dob));
-			callSt.setString(7, (address.length() == 0) ? null : address);
-			callSt.setString(8, (notes.length() == 0) ? null : notes);
-			callSt.execute();
-			
-			return callSt.getString(1);
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, name);
+			preparedStatement.setString(2, (phone.length() == 0) ? null : phone);
+			preparedStatement.setString(3, (email.length() == 0) ? null : email);
+			preparedStatement.setDate(4, (dob == null) ? null : Date.valueOf(dob));
+			preparedStatement.setString(5, (address.length() == 0) ? null : address);
+			preparedStatement.setString(6, (notes.length() == 0) ? null : notes);
+			preparedStatement.setInt(7, user_id);
+			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 
-		return null;
 	}
 
 	public void deleteContact(int user_id) {
@@ -133,7 +129,7 @@ public class DBConnection {
 		return 0;
 	}
 
-	public void addToTab(String tab, int user_id) {
+	public void addTag(String tab, int user_id) {
 		String query = "INSERT INTO " + tab + " VALUES (" + user_id + ")";
 		try {
 			statement.executeUpdate(query);
@@ -143,4 +139,12 @@ public class DBConnection {
 
 	}
 
+	public void deleteTag(String tab, int user_id) {
+		String query = "DELETE FROM " + tab + " WHERE user_id = " + user_id;
+		try {
+			statement.executeUpdate(query);
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+	}
 }
