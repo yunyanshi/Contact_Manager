@@ -29,7 +29,8 @@ public class ContactsGUI {
     private TextField  emailTextField, addressTextField, phoneNumberTextField, notesTextField;
     private JCheckBox isFavorite, isFamily, isFriend;
     private DatePicker birthdayPicker;
-    private String tabSelected = "Contacts";
+    private final String[] tabs = {"Contacts", "Favorite", "Family", "Friend"};
+    private String tabSelected = tabs[0];
     JTextField nameTextField;
 
     public ContactsGUI() {
@@ -333,29 +334,21 @@ public class ContactsGUI {
         cancelButton.addActionListener(e -> newContactWindow.dispose());
         JButton confirmButton = new JButton("Confirm");
         cancelOrConfirmPanel.add(confirmButton);
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (nameTextField.getText().length() == 0) {
-                    JOptionPane.showMessageDialog(newContactWindow, "Please enter the contact name!",
-                            "Invalid New Contact Information", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    int newId = connection.createNewContact(nameTextField.getText(), phoneTextField.getText(),
-                            birthdayPicker.getDate(), emailTextField.getText(),addressTextField.getText(),
-                            notesTextField.getText());
-                    reloadContactListPanel();
-
-                }
+        confirmButton.addActionListener(e -> {
+            if (nameTextField.getText().length() == 0) {
+                JOptionPane.showMessageDialog(newContactWindow, "Please enter the contact name!",
+                        "Invalid New Contact Information", JOptionPane.WARNING_MESSAGE);
+            } else {
+                int newId = connection.createNewContact(nameTextField.getText(), phoneTextField.getText(),
+                        birthdayPicker.getDate(), emailTextField.getText(),addressTextField.getText(),
+                        notesTextField.getText());
+                tabSelected = tabs[0];
+                reloadContactListPanel();
+                reloadRightPanel(newId);
+                newContactWindow.dispose();
             }
         });
-
         newContactTopPanel.add(cancelOrConfirmPanel);
-
-
-
-
-
-
 
         newContactWindow.setContentPane(newContactTopPanel);
         newContactWindow.setSize(500, 500);

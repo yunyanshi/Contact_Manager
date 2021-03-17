@@ -170,7 +170,21 @@ public class DBConnection {
 
 	public int createNewContact(String name, String phone, LocalDate dob, String email, String address, String notes) {
 		int id = getNextId();
+		String query = "INSERT INTO CONTACTS VALUES(?,?,?,?,?,?,?)";
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, id);
+			preparedStatement.setString(2, name);
+			preparedStatement.setString(3, (phone.length() == 0) ? null : phone);
+			preparedStatement.setString(4, (email.length() == 0) ? null : email);
+			preparedStatement.setDate(5, (dob == null) ? null : Date.valueOf(dob));
+			preparedStatement.setString(6, (address.length() == 0) ? null : address);
+			preparedStatement.setString(7, (notes.length() == 0) ? null : notes);
+			preparedStatement.executeUpdate();
 
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
 		return id;
 	}
 
