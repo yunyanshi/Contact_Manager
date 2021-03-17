@@ -271,6 +271,20 @@ public class ContactsGUI {
         JButton deleteButton = new JButton("Delete");
         deleteButton.setForeground(Color.DARK_GRAY);
         deleteButton.setFont(new Font("Courier", Font.PLAIN, 16));
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = JOptionPane.showConfirmDialog(window,
+                        "Are you sure you want to delete this contact?",
+                        "Contact Deletion Confirmation", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    connection.deleteContact(selectedUserID);
+                    selectedTab = tabs[0];
+                    reloadContactListPanel();
+                    reloadRightPanel();
+                }
+            }
+        });
         editAndDeletePanel.add(deleteButton);
         bottomPanel.add(editAndDeletePanel);
         rightPanel.add(bottomPanel);
@@ -311,6 +325,10 @@ public class ContactsGUI {
 
         Panel dobPanel = new Panel();
         DatePicker birthdayPicker = new DatePicker();
+        ImageIcon dateExampleIcon = new ImageIcon("src/datepickerbutton1.png");
+        JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
+        date_button.setText("");
+        date_button.setIcon(dateExampleIcon);
         dobPanel.add(birthdayPicker);
         newContactTopPanel.add(dobPanel);
 

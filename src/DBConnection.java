@@ -188,4 +188,13 @@ public class DBConnection {
 		return id;
 	}
 
+	public void deleteContact(int user_id) {
+		String query = "DELETE FROM CONTACTS WHERE USER_ID = " + user_id;
+		try {
+			statement.executeUpdate(query);
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+	}
+
 }
