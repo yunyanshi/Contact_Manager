@@ -130,6 +130,7 @@ public class ContactsGUI {
             }
         });
         tabPanel.add(addContactButton);
+        tabPanel.add(Box.createVerticalStrut(50));
     }
     
     private void createContactListPanel() {
@@ -220,7 +221,7 @@ public class ContactsGUI {
         phoneAndEmailAndBirthdayPanel.setLayout(new GridLayout(3, 1));
         Panel phoneNumberPanel = new Panel();
         phoneNumberPanel.setLayout(new BorderLayout());
-        Label phoneLabel = new Label("Phone Number:");
+        Label phoneLabel = new Label("Phone Number: ");
         ImageIcon phoneIcon = new ImageIcon("src/images/phone-icon.png");
         phoneLabel.setIcon(phoneIcon);
         phoneNumberPanel.add(phoneLabel, BorderLayout.WEST);
@@ -240,7 +241,7 @@ public class ContactsGUI {
 
         Panel birthdayPanel = new Panel();
         birthdayPanel.setLayout(new BorderLayout());
-        Label dobLabel = new Label("Birthday:");
+        Label dobLabel = new Label("Birthday: ");
         ImageIcon dobIcon = new ImageIcon("src/images/dob-icon.png");
         dobLabel.setIcon(dobIcon);
         birthdayPanel.add(dobLabel, BorderLayout.WEST);
@@ -274,7 +275,7 @@ public class ContactsGUI {
         rightPanel.add(addressAndNotesPanel);
 
         Panel editAndDeletePanel = new Panel();
-        editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+        editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(60, 0, 0, 0));
         JButton editButton = new JButton("Edit");
         editButton.setFont(new Font("Courier", Font.PLAIN, 16));
         editButton.addActionListener(this::editContactActionPerformed);
