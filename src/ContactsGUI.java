@@ -25,9 +25,10 @@ public class ContactsGUI {
     private TextField  emailTextField, addressTextField, phoneNumberTextField, notesTextField;
     private JCheckBox isFavorite, isFamily, isFriend;
     private DatePicker birthdayPicker;
-    private final String[] tabs = {"Contacts", "Favorite", "Family", "Friend"};
+    private final String[] tabs = {"Contacts", "Favorites", "Family", "Friends"};
     private String selectedTab = tabs[0];
     private int selectedUserID;
+    private TabButton allContactsTab, favoritesTab, familyTab, friendsTab;
     JTextField nameTextField;
 
     public ContactsGUI() {
@@ -76,7 +77,7 @@ public class ContactsGUI {
         Panel tabLabelPanel = new Panel();
         tabLabelPanel.setLayout(new GridLayout(4, 1));
 
-        TabButton allContactsTab = new TabButton("All Contacts");
+        allContactsTab = new TabButton("All Contacts");
         allContactsTab.setSelected(true);
         tabsGroup.add(allContactsTab);
         tabLabelPanel.add(allContactsTab);
@@ -86,7 +87,7 @@ public class ContactsGUI {
             reloadRightPanel();
         });
 
-        TabButton favoritesTab = new TabButton("Favorites");
+        favoritesTab = new TabButton("Favorites");
         tabsGroup.add(favoritesTab);
         tabLabelPanel.add(favoritesTab);
         favoritesTab.addActionListener(e -> {
@@ -95,7 +96,7 @@ public class ContactsGUI {
             reloadRightPanel();
         });
 
-        TabButton familyTab = new TabButton("Family");
+        familyTab = new TabButton("Family");
         tabsGroup.add(familyTab);
         tabLabelPanel.add(familyTab);
         familyTab.addActionListener(e -> {
@@ -104,7 +105,7 @@ public class ContactsGUI {
             reloadRightPanel();
         });
 
-        TabButton friendsTab = new TabButton("Friends");
+        friendsTab = new TabButton("Friends");
         tabsGroup.add(friendsTab);
         tabLabelPanel.add(friendsTab);
         friendsTab.addActionListener(e -> {
@@ -362,6 +363,7 @@ public class ContactsGUI {
                         birthdayPicker.getDate(), emailTextField.getText(),addressTextField.getText(),
                         notesTextField.getText());
                 selectedTab = tabs[0];
+                allContactsTab.setSelected(true);
                 reloadContactListPanel();
                 selectedUserID = newId;
                 reloadRightPanel();
@@ -387,6 +389,8 @@ public class ContactsGUI {
                 Date birthday = contactInfoResultSet.getDate("birthday");
                 if (birthday != null) {
                     birthdayPicker.setDate(birthday.toLocalDate());
+                } else {
+                    birthdayPicker.clear();
                 }
                 addressTextField.setText(contactInfoResultSet.getString("address"));
                 notesTextField.setText(contactInfoResultSet.getString("notes"));
