@@ -91,41 +91,29 @@ public class DBConnection {
 		return null;
 	}
 
-	public String updateExistContact(String user_id, String name, String phone_number, String email, String dob,
+	public String updateExistContact(int user_id, String name, String phone_number, String email, LocalDate dob,
 			String address, String notes) {
 
 		CallableStatement callSt = null;
 		try {
 			callSt = connection.prepareCall("{?= call updateExistingContact(?,?,?,?,?,?,?)}");
 			callSt.registerOutParameter(1, Types.VARCHAR);
-			callSt.setInt(2, Integer.parseInt(user_id));
+			callSt.setInt(2, user_id);
 			callSt.setString(3, name);
 			callSt.setString(4, phone_number);
 			callSt.setString(5, email);
-			java.util.Date date = sdf.parse(dob);
-			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-			callSt.setDate(6, sqlDate);
+			//java.util.Date date = sdf.parse(dob);
+			//java.sql.Date sqlDate = );
+			callSt.setDate(6, Date.valueOf(dob));
 			callSt.setString(7, address);
 			callSt.setString(8, notes);
 			callSt.execute();
-			connection.close();
-			callSt.close();
+			
 			return callSt.getString(1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				if (callSt != null)
-					callSt.close();
-				if (connection != null)
-					connection.close();
-			} catch (Exception ex) {
-			}
-		}
+		} 
 		return null;
 	}
 	
