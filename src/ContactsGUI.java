@@ -182,6 +182,7 @@ public class ContactsGUI {
     private void createRightPanel() {
         rightPanel = new Panel();
         rightPanel.setLayout(new GridLayout(4, 1));
+        rightPanel.setBorder(BorderFactory.createEtchedBorder());
 
         Panel nameAndCheckBoxPanel = new Panel();
         nameAndCheckBoxPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
@@ -277,33 +278,21 @@ public class ContactsGUI {
         Panel editAndDeletePanel = new Panel();
         editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
         JButton editButton = new JButton("Edit");
-        editButton.setForeground(Color.DARK_GRAY);
         editButton.setFont(new Font("Courier", Font.PLAIN, 16));
-        editButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				editContactActionPerformed(e);
-			}
-        	
-        });
+        editButton.addActionListener(e -> editContactActionPerformed(e));
         editAndDeletePanel.add(editButton);
 
         JButton deleteButton = new JButton("Delete");
-        deleteButton.setForeground(Color.DARK_GRAY);
         deleteButton.setFont(new Font("Courier", Font.PLAIN, 16));
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(window,
-                        "Are you sure you want to delete this contact?",
-                        "Contact Deletion Confirmation", JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    connection.deleteContact(selectedUserID);
-                    selectedTab = tabs[0];
-                    reloadContactListPanel();
-                    reloadRightPanel();
-                }
+        deleteButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(window,
+                    "Are you sure you want to delete this contact?",
+                    "Contact Deletion Confirmation", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                connection.deleteContact(selectedUserID);
+                selectedTab = tabs[0];
+                reloadContactListPanel();
+                reloadRightPanel();
             }
         });
         editAndDeletePanel.add(deleteButton);
@@ -354,7 +343,7 @@ public class ContactsGUI {
 
         Panel dobPanel = new Panel();
         DatePicker birthdayPicker = new DatePicker();
-        ImageIcon dateExampleIcon = new ImageIcon("src/images/datepickerbutton1.png");
+        ImageIcon dateExampleIcon = new ImageIcon("src/images/datepicker-icon.png");
         JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
         date_button.setText("");
         date_button.setIcon(dateExampleIcon);
@@ -451,8 +440,10 @@ public class ContactsGUI {
 	public void createNewContactTopPanel() {
         newContactTopPanel = new Panel();
         newContactTopPanel.setLayout(new GridLayout(0, 1));
+        newContactTopPanel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
         Panel namePanel = new Panel();
+        namePanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
         namePanel.setLayout(new BorderLayout());
         Label nameLabel = new Label("Name: ");
         namePanel.add(nameLabel, BorderLayout.WEST);
@@ -461,6 +452,7 @@ public class ContactsGUI {
         newContactTopPanel.add(namePanel);
 
         Panel phonePanel = new Panel();
+        phonePanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
         phonePanel.setLayout(new BorderLayout());
         Label phoneLabel = new Label("Phone Number: ");
         phonePanel.add(phoneLabel, BorderLayout.WEST);
@@ -469,6 +461,7 @@ public class ContactsGUI {
         newContactTopPanel.add(phonePanel);
 
         Panel emailPanel = new Panel();
+        emailPanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
         emailPanel.setLayout(new BorderLayout());
         Label emailLabel = new Label("Email: ");
         emailPanel.add(emailLabel, BorderLayout.WEST);
@@ -477,15 +470,20 @@ public class ContactsGUI {
         newContactTopPanel.add(emailPanel);
 
         Panel dobPanel = new Panel();
+        dobPanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
+        dobPanel.setLayout(new BorderLayout());
+        Label birthdayLabel = new Label("Birthday: ");
+        dobPanel.add(birthdayLabel, BorderLayout.WEST);
         DatePicker birthdayPicker = new DatePicker();
-        ImageIcon dateExampleIcon = new ImageIcon("src/images/datepickerbutton1.png");
+        birthdayPicker.setBackground(Color.white);
         JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
-        date_button.setText("");
-        date_button.setIcon(dateExampleIcon);
-        dobPanel.add(birthdayPicker);
+        date_button.setText(null);
+        date_button.setIcon(new ImageIcon("src/images/datepicker-icon.png"));
+        dobPanel.add(birthdayPicker, BorderLayout.CENTER);
         newContactTopPanel.add(dobPanel);
 
         Panel addressPanel = new Panel();
+        addressPanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
         addressPanel.setLayout(new BorderLayout());
         Label addressLabel = new Label("Address: ");
         addressPanel.add(addressLabel, BorderLayout.WEST);
@@ -494,6 +492,7 @@ public class ContactsGUI {
         newContactTopPanel.add(addressPanel);
 
         Panel notesPanel = new Panel();
+        notesPanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
         notesPanel.setLayout(new BorderLayout());
         Label notesLabel = new Label("Notes: ");
         notesPanel.add(notesLabel, BorderLayout.WEST);
@@ -502,17 +501,18 @@ public class ContactsGUI {
         newContactTopPanel.add(notesPanel);
 
         Panel checkBoxPanel = new Panel();
-        JCheckBox isFavorite = new JCheckBox("Favorite");
+        checkBoxPanel.setLayout(new GridLayout(1, 3));
+        JCheckBox isFavorite = new JCheckBox(tabs[1]);
         isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
         isFavorite.setForeground(Color.DARK_GRAY);
         isFavorite.setSelected(false);
         checkBoxPanel.add(isFavorite);
-        JCheckBox isFamily = new JCheckBox("Family");
+        JCheckBox isFamily = new JCheckBox(tabs[2]);
         isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
         isFamily.setForeground(Color.DARK_GRAY);
         isFamily.setSelected(false);
         checkBoxPanel.add(isFamily);
-        JCheckBox isFriend = new JCheckBox("Friend");
+        JCheckBox isFriend = new JCheckBox(tabs[3]);
         isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
         isFriend.setForeground(Color.DARK_GRAY);
         isFriend.setSelected(false);
@@ -520,10 +520,13 @@ public class ContactsGUI {
         newContactTopPanel.add(checkBoxPanel);
 
         Panel cancelOrConfirmPanel = new Panel();
+        cancelOrConfirmPanel.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
         JButton cancelButton = new JButton("Cancel");
+        cancelButton.setFont(new Font("Courier", Font.PLAIN, 16));
         cancelOrConfirmPanel.add(cancelButton);
         cancelButton.addActionListener(e -> newContactWindow.dispose());
         JButton confirmButton = new JButton("Confirm");
+        confirmButton.setFont(new Font("Courier", Font.PLAIN, 16));
         cancelOrConfirmPanel.add(confirmButton);
         confirmButton.addActionListener(e -> {
             if (nameTextField.getText().length() == 0) {
@@ -533,6 +536,15 @@ public class ContactsGUI {
                 int newId = connection.createNewContact(nameTextField.getText(), phoneTextField.getText(),
                         birthdayPicker.getDate(), emailTextField.getText(),addressTextField.getText(),
                         notesTextField.getText());
+                if (isFavorite.isSelected()) {
+                    connection.addToTab(tabs[1], newId);
+                }
+                if (isFamily.isSelected()) {
+                    connection.addToTab(tabs[2], newId);
+                }
+                if (isFriend.isSelected()) {
+                    connection.addToTab(tabs[3], newId);
+                }
                 selectedTab = tabs[0];
                 allContactsTab.setSelected(true);
                 reloadContactListPanel();

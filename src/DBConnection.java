@@ -185,4 +185,14 @@ public class DBConnection {
 		}
 	}
 
+	public void addToTab(String tab, int user_id) {
+		String query = "INSERT INTO " + tab + " VALUES (" + user_id + ")";
+		try {
+			statement.executeUpdate(query);
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+
+	}
+
 }
