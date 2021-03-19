@@ -6,9 +6,8 @@ public class DBConnection {
 	private static final String DB_URL = "jdbc:mysql://localhost:3306/mysql";
 	private static final String USER = "root";
 	private static final String PASSWORD = "Syy19930305";
-	Connection connection;
-	Statement statement;
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private Connection connection;
+	private Statement statement;
 
 	public DBConnection() {
 		try {

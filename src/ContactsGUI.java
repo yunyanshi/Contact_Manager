@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,11 +18,11 @@ public class ContactsGUI {
     private final DBConnection connection;
 
     private JFrame window, createContactWindow, editContactWindow;
-    private Panel topPanel, leftPanel, rightPanel, tabPanel, contactListPanel;
+    private Panel topPanel,tabPanel, contactListPanel, rightPanel;
     private JScrollPane contactListScrollPane;
     private TextField  emailTextField, addressTextField, phoneNumberTextField, notesTextField, birthdayTextField;
     private JCheckBox isFavorite, isFamily, isFriend;
-    private TabButton allContactsTab, favoritesTab, familyTab, friendsTab;
+    private TabButton allContactsTab;
     private JTextField nameTextField;
     private String selectedTab = tabs[0];
     private int selectedUserID;
@@ -47,23 +46,21 @@ public class ContactsGUI {
         topPanel = new Panel();
         topPanel.setLayout(new GridLayout(1, 2));
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        createLeftPanel();
+
+        Panel leftPanel = new Panel();
+        leftPanel.setLayout(new BorderLayout());
+        createTabPanel();
+        leftPanel.add(tabPanel, BorderLayout.WEST);
+        createContactListPanel();
+        leftPanel.add(contactListScrollPane, BorderLayout.CENTER);
         topPanel.add(leftPanel);
+
         createRightPanel();
         topPanel.add(rightPanel);
         reloadContactListPanel();
         reloadRightPanel();
     }
 
-    private void createLeftPanel() {
-        leftPanel = new Panel();
-        leftPanel.setLayout(new BorderLayout());
-        createTabPanel();
-        leftPanel.add(tabPanel, BorderLayout.WEST);
-        createContactListPanel();
-        leftPanel.add(contactListScrollPane, BorderLayout.CENTER);
-    }
-    
     private void createTabPanel() {
         tabPanel = new Panel();
         tabPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -79,34 +76,34 @@ public class ContactsGUI {
         tabsGroup.add(allContactsTab);
         tabLabelPanel.add(allContactsTab);
         allContactsTab.addActionListener(e -> {
-            selectedTab = "Contacts";
+            selectedTab = tabs[0];
             reloadContactListPanel();
             reloadRightPanel();
         });
 
-        favoritesTab = new TabButton("Favorites");
+        TabButton favoritesTab = new TabButton(tabs[1]);
         tabsGroup.add(favoritesTab);
         tabLabelPanel.add(favoritesTab);
         favoritesTab.addActionListener(e -> {
-            selectedTab = "Favorites";
+            selectedTab = tabs[1];
             reloadContactListPanel();
             reloadRightPanel();
         });
 
-        familyTab = new TabButton("Family");
+        TabButton familyTab = new TabButton(tabs[2]);
         tabsGroup.add(familyTab);
         tabLabelPanel.add(familyTab);
         familyTab.addActionListener(e -> {
-            selectedTab = "Family";
+            selectedTab = tabs[2];
             reloadContactListPanel();
             reloadRightPanel();
         });
 
-        friendsTab = new TabButton("Friends");
+        TabButton friendsTab = new TabButton(tabs[3]);
         tabsGroup.add(friendsTab);
         tabLabelPanel.add(friendsTab);
         friendsTab.addActionListener(e -> {
-            selectedTab = "Friends";
+            selectedTab = tabs[3];
             reloadContactListPanel();
             reloadRightPanel();
         });
@@ -134,39 +131,7 @@ public class ContactsGUI {
         contactListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         contactListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
-    
-    public void reloadContactListPanel() {
-    	contactListPanel.removeAll();
-    	contactListPanel.repaint();
-    	contactListPanel.revalidate();
 
-        LinkedHashMap<ContactEntryButton, Integer> buttonMap = new LinkedHashMap<>();
-        ResultSet contactListResultSet = connection.getContactListResultSet(selectedTab);
-        if (contactListResultSet != null) {
-            try {
-                while (contactListResultSet.next()) {
-                    int user_id = contactListResultSet.getInt(1);
-                    String name = contactListResultSet.getString(2);
-                    ContactEntryButton button = new ContactEntryButton(name);
-                    buttonMap.put(button, user_id);
-
-                    contactListPanel.add(button);
-                    button.addActionListener(e -> {
-                        selectedUserID = user_id;
-                        reloadRightPanel();
-                    });
-                }
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
-            }
-        }
-        if (buttonMap.size() > 0) {
-            Iterator<Map.Entry<ContactEntryButton, Integer>> iterator = buttonMap.entrySet().iterator();
-            Map.Entry<ContactEntryButton, Integer> entry = iterator.next();
-            selectedUserID = entry.getValue();
-        }
-    }
-    
     private void createRightPanel() {
         rightPanel = new Panel();
         rightPanel.setLayout(new GridLayout(4, 1));
@@ -264,7 +229,7 @@ public class ContactsGUI {
         rightPanel.add(addressAndNotesPanel);
 
         Panel editAndDeletePanel = new Panel();
-        editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(60, 0, 0, 0));
+        editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(75, 0, 0, 0));
         JButton editButton = new JButton("Edit");
         editButton.setFont(courier16Font);
         editButton.addActionListener(this::editContactActionPerformed);
@@ -286,6 +251,61 @@ public class ContactsGUI {
         editAndDeletePanel.add(deleteButton);
 
         rightPanel.add(editAndDeletePanel);
+    }
+
+    public void reloadContactListPanel() {
+        contactListPanel.removeAll();
+        contactListPanel.repaint();
+        contactListPanel.revalidate();
+
+        LinkedHashMap<ContactEntryButton, Integer> buttonMap = new LinkedHashMap<>();
+        ResultSet contactListResultSet = connection.getContactListResultSet(selectedTab);
+        if (contactListResultSet != null) {
+            try {
+                while (contactListResultSet.next()) {
+                    int user_id = contactListResultSet.getInt(1);
+                    String name = contactListResultSet.getString(2);
+                    ContactEntryButton button = new ContactEntryButton(name);
+                    buttonMap.put(button, user_id);
+
+                    contactListPanel.add(button);
+                    button.addActionListener(e -> {
+                        selectedUserID = user_id;
+                        reloadRightPanel();
+                    });
+                }
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        if (buttonMap.size() > 0) {
+            Iterator<Map.Entry<ContactEntryButton, Integer>> iterator = buttonMap.entrySet().iterator();
+            Map.Entry<ContactEntryButton, Integer> entry = iterator.next();
+            selectedUserID = entry.getValue();
+        }
+    }
+
+    public void reloadRightPanel() {
+        ResultSet contactInfoResultSet = connection.getContactInfoResultSet(selectedUserID);
+
+        try {
+            while (contactInfoResultSet.next()) {
+                nameTextField.setText(contactInfoResultSet.getString("name"));
+                phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
+                emailTextField.setText((contactInfoResultSet.getString("email")));
+                Date birthday = contactInfoResultSet.getDate("birthday");
+                if (birthday != null) {
+                    birthdayTextField.setText(birthday.toString());
+                }
+                addressTextField.setText(contactInfoResultSet.getString("address"));
+                notesTextField.setText(contactInfoResultSet.getString("notes"));
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        isFavorite.setSelected(connection.ifBelongs(selectedUserID, "Favorites"));
+        isFamily.setSelected(connection.ifBelongs(selectedUserID, "Family"));
+        isFriend.setSelected(connection.ifBelongs(selectedUserID, "Friends"));
     }
     
     public void addContactActionPerformed(ActionEvent e) {
@@ -550,29 +570,6 @@ public class ContactsGUI {
         editContactWindow.setSize(500, 500);
         editContactWindow.setTitle("Edit Contact");
         editContactWindow.setVisible(true);
-    }
-
-    public void reloadRightPanel() {
-        ResultSet contactInfoResultSet = connection.getContactInfoResultSet(selectedUserID);
-
-        try {
-            while (contactInfoResultSet.next()) {
-                nameTextField.setText(contactInfoResultSet.getString("name"));
-                phoneNumberTextField.setText(contactInfoResultSet.getString("phone_number"));
-                emailTextField.setText((contactInfoResultSet.getString("email")));
-                Date birthday = contactInfoResultSet.getDate("birthday");
-                if (birthday != null) {
-                    birthdayTextField.setText(birthday.toString());
-                }
-                addressTextField.setText(contactInfoResultSet.getString("address"));
-                notesTextField.setText(contactInfoResultSet.getString("notes"));
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        isFavorite.setSelected(connection.ifBelongs(selectedUserID, "Favorites"));
-        isFamily.setSelected(connection.ifBelongs(selectedUserID, "Family"));
-        isFriend.setSelected(connection.ifBelongs(selectedUserID, "Friends"));
     }
 
     public static void main(String[] args) {
