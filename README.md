@@ -1,5 +1,11 @@
-# COEN275_Final_Project
+# COEN275_Project_Report
 
-# print('Hello World')
+## Table of contents
 
-# print('This is acd test')
+## Contribution
+
+## Implementation Details
+
+## Results
+
+## Conclusion

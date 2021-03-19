@@ -1,7 +1,3 @@
-// COEN 275 Final Project
-// Contact Manager
-// Author: Ce Pang & Yunyan Shi
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;

@@ -1,9 +1,6 @@
-import javax.xml.transform.Result;
 import java.sql.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
 
 public class DBConnection {
 	private static final String DB_URL = "jdbc:mysql://localhost:3306/mysql";
