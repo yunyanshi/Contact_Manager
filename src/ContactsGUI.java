@@ -14,6 +14,7 @@ import com.github.lgooddatepicker.components.DatePicker;
 
 public class ContactsGUI {
     protected static final Color darkGray = new Color(64,64,64);
+    private static final Font courier16Font = new Font("Courier", Font.PLAIN, 16);
     private final String[] tabs = {"Contacts", "Favorites", "Family", "Friends"};
     private final DBConnection connection;
 
@@ -119,12 +120,7 @@ public class ContactsGUI {
         addContactButton.setForeground(darkGray);
         addContactButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        addContactButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addContactActionPerformed(e);
-            }
-        });
+        addContactButton.addActionListener(this::addContactActionPerformed);
         tabPanel.add(addContactButton);
         tabPanel.add(Box.createVerticalStrut(50));
     }
@@ -155,16 +151,13 @@ public class ContactsGUI {
                     buttonMap.put(button, user_id);
 
                     contactListPanel.add(button);
-                    button.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            selectedUserID = user_id;
-                            reloadRightPanel();
-                        }
+                    button.addActionListener(e -> {
+                        selectedUserID = user_id;
+                        reloadRightPanel();
                     });
                 }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         if (buttonMap.size() > 0) {
@@ -190,21 +183,21 @@ public class ContactsGUI {
 
         Panel checkBoxPanel = new Panel();
         isFavorite = new JCheckBox(tabs[1]);
-        isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFavorite.setFont(courier16Font);
         isFavorite.setForeground(Color.DARK_GRAY);
         isFavorite.setSelected(false);
         isFavorite.setEnabled(false);
         checkBoxPanel.add(isFavorite);
 
         isFamily = new JCheckBox(tabs[2]);
-        isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFamily.setFont(courier16Font);
         isFamily.setForeground(Color.DARK_GRAY);
         isFamily.setSelected(false);
         isFamily.setEnabled(false);
         checkBoxPanel.add(isFamily);
 
         isFriend = new JCheckBox(tabs[3]);
-        isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFriend.setFont(courier16Font);
         isFriend.setForeground(Color.DARK_GRAY);
         isFriend.setSelected(false);
         isFriend.setEnabled(false);
@@ -273,12 +266,12 @@ public class ContactsGUI {
         Panel editAndDeletePanel = new Panel();
         editAndDeletePanel.setBorder(BorderFactory.createEmptyBorder(60, 0, 0, 0));
         JButton editButton = new JButton("Edit");
-        editButton.setFont(new Font("Courier", Font.PLAIN, 16));
+        editButton.setFont(courier16Font);
         editButton.addActionListener(this::editContactActionPerformed);
         editAndDeletePanel.add(editButton);
 
         JButton deleteButton = new JButton("Delete");
-        deleteButton.setFont(new Font("Courier", Font.PLAIN, 16));
+        deleteButton.setFont(courier16Font);
         deleteButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(window,
                     "Are you sure you want to delete this contact?",
@@ -362,17 +355,17 @@ public class ContactsGUI {
         Panel checkBoxPanel = new Panel();
         checkBoxPanel.setLayout(new GridLayout(1, 3));
         JCheckBox isFavorite = new JCheckBox(tabs[1]);
-        isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFavorite.setFont(courier16Font);
         isFavorite.setForeground(Color.DARK_GRAY);
         isFavorite.setSelected(false);
         checkBoxPanel.add(isFavorite);
         JCheckBox isFamily = new JCheckBox(tabs[2]);
-        isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFamily.setFont(courier16Font);
         isFamily.setForeground(Color.DARK_GRAY);
         isFamily.setSelected(false);
         checkBoxPanel.add(isFamily);
         JCheckBox isFriend = new JCheckBox(tabs[3]);
-        isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFriend.setFont(courier16Font);
         isFriend.setForeground(Color.DARK_GRAY);
         isFriend.setSelected(false);
         checkBoxPanel.add(isFriend);
@@ -381,11 +374,11 @@ public class ContactsGUI {
         Panel cancelOrConfirmPanel = new Panel();
         cancelOrConfirmPanel.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.setFont(new Font("Courier", Font.PLAIN, 16));
+        cancelButton.setFont(courier16Font);
         cancelOrConfirmPanel.add(cancelButton);
         cancelButton.addActionListener(e1 -> createContactWindow.dispose());
         JButton confirmButton = new JButton("Confirm");
-        confirmButton.setFont(new Font("Courier", Font.PLAIN, 16));
+        confirmButton.setFont(courier16Font);
         cancelOrConfirmPanel.add(confirmButton);
         confirmButton.addActionListener(e2 -> {
             if (nameTextField.getText().length() == 0) {
@@ -496,19 +489,19 @@ public class ContactsGUI {
         checkBoxPanel.setLayout(new GridLayout(1, 3));
         JCheckBox isFavorite = new JCheckBox(tabs[1]);
         isFavorite.setSelected(this.isFavorite.isSelected());
-        isFavorite.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFavorite.setFont(courier16Font);
         isFavorite.setForeground(Color.DARK_GRAY);
         checkBoxPanel.add(isFavorite);
 
         JCheckBox isFamily = new JCheckBox(tabs[2]);
         isFamily.setSelected(this.isFamily.isSelected());
-        isFamily.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFamily.setFont(courier16Font);
         isFamily.setForeground(Color.DARK_GRAY);
         checkBoxPanel.add(isFamily);
 
         JCheckBox isFriend = new JCheckBox(tabs[3]);
         isFriend.setSelected(this.isFriend.isSelected());
-        isFriend.setFont(new Font("Courier", Font.PLAIN, 16));
+        isFriend.setFont(courier16Font);
         isFriend.setForeground(Color.DARK_GRAY);
         checkBoxPanel.add(isFriend);
         editContactTopPanel.add(checkBoxPanel);
