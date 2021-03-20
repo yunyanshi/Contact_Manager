@@ -8,7 +8,7 @@ public class DBConnection {
 	private Connection connection;
 	private Statement statement;
 
-	public DBConnection() {
+	DBConnection() {
 		try {
 			System.out.println("Connecting to database...");
 			connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
@@ -19,7 +19,7 @@ public class DBConnection {
 		}
 	}
 
-	public ResultSet getContactListResultSet(String tab) {
+	ResultSet getContactListResultSet(String tab) {
 		String query;
 		if (tab.equals("contact")) {
 			query = "SELECT user_id, name FROM Contacts order BY name";
@@ -37,7 +37,7 @@ public class DBConnection {
 		return resultSet;
 	}
 
-	public ResultSet getContactInfoResultSet(int user_id) {
+	ResultSet getContactInfoResultSet(int user_id) {
 		String query = "SELECT * FROM Contacts WHERE user_id = " + user_id;
 		ResultSet resultSet = null;
 		try {
@@ -48,7 +48,7 @@ public class DBConnection {
 		return resultSet;
 	}
 
-	public int createContact(String name, String phone, LocalDate dob,
+	int createContact(String name, String phone, LocalDate dob,
 							 String email, String address, String notes) {
 		int id = getNextId();
 		String query = "INSERT INTO CONTACTS VALUES(?,?,?,?,?,?,?)";
@@ -68,7 +68,7 @@ public class DBConnection {
 		return id;
 	}
 
-	public void updateContact(int user_id, String name, String phone,
+	void updateContact(int user_id, String name, String phone,
 								String email, LocalDate dob, String address, String notes) {
 		String query = "UPDATE CONTACTS SET name = ?, phone_number = ?, email = ?, " +
 				"birthday = ?, address = ?, notes = ? WHERE user_id = ? ";
@@ -87,7 +87,7 @@ public class DBConnection {
 		} 
 	}
 
-	public void deleteContact(int user_id) {
+	void deleteContact(int user_id) {
 		String query = "DELETE FROM CONTACTS WHERE USER_ID = " + user_id;
 		try {
 			statement.executeUpdate(query);
@@ -96,7 +96,7 @@ public class DBConnection {
 		}
 	}
 
-	public boolean ifBelongs(int user_id, String tab) {
+	boolean ifBelongs(int user_id, String tab) {
 		String query = "SELECT COUNT(*) FROM (SELECT * FROM " + tab + " WHERE user_id = " + user_id + ") T";
 		try {
 			ResultSet resultSet = statement.executeQuery(query);
@@ -110,7 +110,7 @@ public class DBConnection {
 		return false;
 	}
 
-	public int getNextId() {
+	int getNextId() {
 		String query = "SELECT MAX(user_id) from Contacts";
 		try {
 			ResultSet resultSet = statement.executeQuery(query);
@@ -124,7 +124,7 @@ public class DBConnection {
 		return 0;
 	}
 
-	public void addTag(String tab, int user_id) {
+	void addTag(String tab, int user_id) {
 		String query = "INSERT INTO " + tab + " VALUES (" + user_id + ")";
 		try {
 			statement.executeUpdate(query);
@@ -134,7 +134,7 @@ public class DBConnection {
 
 	}
 
-	public void deleteTag(String tab, int user_id) {
+	void deleteTag(String tab, int user_id) {
 		String query = "DELETE FROM " + tab + " WHERE user_id = " + user_id;
 		try {
 			statement.executeUpdate(query);
