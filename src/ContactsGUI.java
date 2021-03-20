@@ -13,7 +13,7 @@ import com.github.lgooddatepicker.components.DatePicker;
 
 public class ContactsGUI {
     protected static final Color darkGray = new Color(64,64,64);
-    private static final Font courier16Font = new Font("Courier", Font.PLAIN, 16);
+    protected static final Font courier16Font = new Font("Courier", Font.PLAIN, 16);
     private final String[] tabs = {"Contacts", "Favorites", "Family", "Friends"};
     private final DBConnection connection;
 
