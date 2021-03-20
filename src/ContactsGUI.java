@@ -237,23 +237,13 @@ public class ContactsGUI {
 
         JButton deleteButton = new JButton("Delete");
         deleteButton.setFont(courier16Font);
-        deleteButton.addActionListener(e -> {
-            int result = JOptionPane.showConfirmDialog(window,
-                    "Are you sure you want to delete this contact?",
-                    "Contact Deletion Confirmation", JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                connection.deleteContact(selectedUserID);
-                selectedTab = tabs[0];
-                reloadContactListPanel();
-                reloadRightPanel();
-            }
-        });
+        deleteButton.addActionListener(this::deleteContactActionPerformed);
         editAndDeletePanel.add(deleteButton);
 
         rightPanel.add(editAndDeletePanel);
     }
 
-    public void reloadContactListPanel() {
+    private void reloadContactListPanel() {
         contactListPanel.removeAll();
         contactListPanel.repaint();
         contactListPanel.revalidate();
@@ -285,7 +275,7 @@ public class ContactsGUI {
         }
     }
 
-    public void reloadRightPanel() {
+    private void reloadRightPanel() {
         ResultSet contactInfoResultSet = connection.getContactInfoResultSet(selectedUserID);
 
         try {
@@ -308,7 +298,7 @@ public class ContactsGUI {
         isFriend.setSelected(connection.ifBelongs(selectedUserID, "Friends"));
     }
     
-    public void addContactActionPerformed(ActionEvent e) {
+    private void addContactActionPerformed(ActionEvent e) {
         createContactWindow = new JFrame();
         Panel newContactTopPanel = new Panel();
         newContactTopPanel.setLayout(new GridLayout(0, 1));
@@ -433,7 +423,7 @@ public class ContactsGUI {
         createContactWindow.setVisible(true);
     }
     
-    public void editContactActionPerformed(ActionEvent e) {
+    private void editContactActionPerformed(ActionEvent e) {
     	editContactWindow = new JFrame();
         Panel editContactTopPanel = new Panel();
         editContactTopPanel.setLayout(new GridLayout(0, 1));
@@ -570,6 +560,17 @@ public class ContactsGUI {
         editContactWindow.setSize(500, 500);
         editContactWindow.setTitle("Edit Contact");
         editContactWindow.setVisible(true);
+    }
+
+    private void deleteContactActionPerformed(ActionEvent e) {
+        int result = JOptionPane.showConfirmDialog(window,
+                "Are you sure you want to delete this contact?",
+                "Contact Deletion Confirmation", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            connection.deleteContact(selectedUserID);
+            reloadContactListPanel();
+            reloadRightPanel();
+        }
     }
 
     public static void main(String[] args) {
