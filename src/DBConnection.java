@@ -21,7 +21,7 @@ public class DBConnection {
 
 	ResultSet getContactListResultSet(String tab) {
 		String query;
-		if (tab.equals("contact")) {
+		if (tab.equals("Contacts")) {
 			query = "SELECT user_id, name FROM Contacts order BY name";
 		} else {
 			query = "SELECT user_id, name FROM Contacts Where user_id in " + "(SELECT user_id FROM " + tab
@@ -68,8 +68,8 @@ public class DBConnection {
 		return id;
 	}
 
-	void updateContact(int user_id, String name, String phone,
-								String email, LocalDate dob, String address, String notes) {
+	void editContact(int user_id, String name, String phone,
+					 String email, LocalDate dob, String address, String notes) {
 		String query = "UPDATE CONTACTS SET name = ?, phone_number = ?, email = ?, " +
 				"birthday = ?, address = ?, notes = ? WHERE user_id = ? ";
 		try {

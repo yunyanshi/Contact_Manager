@@ -523,7 +523,7 @@ public class ContactsGUI {
         JButton confirmButton = new JButton("Confirm");
         cancelOrConfirmPanel.add(confirmButton);
         confirmButton.addActionListener(e2 -> {
-            connection.updateContact(selectedUserID,
+            connection.editContact(selectedUserID,
                     nameTextField.getText(), phoneTextField.getText(),emailTextField.getText(),
                     birthdayPicker.getDate(), addressTextField.getText(),
                     notesTextField.getText());
