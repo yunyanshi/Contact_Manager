@@ -176,7 +176,7 @@ public class ContactsGUI {
         Panel phoneNumberPanel = new Panel();
         phoneNumberPanel.setLayout(new BorderLayout());
         Label phoneLabel = new Label("Phone Number: ");
-        ImageIcon phoneIcon = new ImageIcon("src/images/phone-icon.png");
+        ImageIcon phoneIcon = new ImageIcon("images/phone-icon.png");
         phoneLabel.setIcon(phoneIcon);
         phoneNumberPanel.add(phoneLabel, BorderLayout.WEST);
         phoneNumberTextField = new TextField();
@@ -185,7 +185,7 @@ public class ContactsGUI {
 
         Panel emailPanel = new Panel();
         emailPanel.setLayout(new BorderLayout());
-        ImageIcon emailIcon = new ImageIcon("src/images/email-icon.png");
+        ImageIcon emailIcon = new ImageIcon("images/email-icon.png");
         Label emailLabel = new Label("Email: ");
         emailLabel.setIcon(emailIcon);
         emailPanel.add(emailLabel, BorderLayout.WEST);
@@ -196,7 +196,7 @@ public class ContactsGUI {
         Panel birthdayPanel = new Panel();
         birthdayPanel.setLayout(new BorderLayout());
         Label dobLabel = new Label("Birthday: ");
-        ImageIcon dobIcon = new ImageIcon("src/images/dob-icon.png");
+        ImageIcon dobIcon = new ImageIcon("images/dob-icon.png");
         dobLabel.setIcon(dobIcon);
         birthdayPanel.add(dobLabel, BorderLayout.WEST);
         birthdayTextField = new TextField();
@@ -210,7 +210,7 @@ public class ContactsGUI {
         addressPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
         addressPanel.setLayout(new BorderLayout());
         Label addressLabel = new Label("Address:");
-        ImageIcon addressIcon = new ImageIcon("src/images/home-icon.png");
+        ImageIcon addressIcon = new ImageIcon("images/home-icon.png");
         addressLabel.setIcon(addressIcon);
         addressPanel.add(addressLabel, BorderLayout.NORTH);
         addressTextField = new TextField();
@@ -221,7 +221,7 @@ public class ContactsGUI {
         notesPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
         notesPanel.setLayout(new BorderLayout());
         Label notesLabel = new Label("Notes: ");
-        notesLabel.setIcon(new ImageIcon("src/images/notes-icon.png"));
+        notesLabel.setIcon(new ImageIcon("images/notes-icon.png"));
         notesPanel.add(notesLabel,BorderLayout.NORTH);
         notesTextField = new TextField();
         notesPanel.add(notesTextField, BorderLayout.CENTER);
@@ -340,7 +340,7 @@ public class ContactsGUI {
         birthdayPicker.setBackground(Color.white);
         JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
         date_button.setText(null);
-        date_button.setIcon(new ImageIcon("src/images/datepicker-icon.png"));
+        date_button.setIcon(new ImageIcon("images/datepicker-icon.png"));
         dobPanel.add(birthdayPicker, BorderLayout.CENTER);
         newContactTopPanel.add(dobPanel);
 
@@ -471,7 +471,7 @@ public class ContactsGUI {
         birthdayPicker.setBackground(Color.white);
         JButton date_button = birthdayPicker.getComponentToggleCalendarButton();
         date_button.setText(null);
-        date_button.setIcon(new ImageIcon("src/images/datepicker-icon.png"));
+        date_button.setIcon(new ImageIcon("images/datepicker-icon.png"));
         dobPanel.add(birthdayPicker, BorderLayout.CENTER);
         editContactTopPanel.add(dobPanel);
 
