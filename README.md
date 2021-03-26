@@ -17,4 +17,13 @@
 Contact Manager uses a Java Swing Date Picker - **LGoodDatePicker** retrieved from https://github.com/LGoodDatePicker/LGoodDatePicker. 
 
 ## Screenshots
-![Initial View](../master/screenshots/1.png)
+![](../master/screenshots/1.png)
+![](../master/screenshots/2.png)
+![](../master/screenshots/3.png)
+![](../master/screenshots/4.png)
+![](../master/screenshots/5.png)
+![](../master/screenshots/6.png)
+![](../master/screenshots/7.png)
+![](../master/screenshots/8.png)
+![](../master/screenshots/9.png)
+
