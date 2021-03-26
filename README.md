@@ -1,4 +1,5 @@
 # Contact Manager
+
 ## Overview:
 * Contact Manager is a contact management application for individuals. 
 * It is based on the local MySQL database, which stores all the data related to the contacts. 
