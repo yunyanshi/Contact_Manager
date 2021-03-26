@@ -15,3 +15,5 @@
 
 ## Reference:
 Contact Manager uses a Java Swing Date Picker - **LGoodDatePicker** retrieved from https://github.com/LGoodDatePicker/LGoodDatePicker. 
+
+## Screenshots
