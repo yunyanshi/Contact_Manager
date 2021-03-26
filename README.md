@@ -11,8 +11,7 @@
     deletes all the information
     corresponding to the designated contact.
   * The user is also allowed to add a new contact at any time.
-      
 * The GUI is connected to the database by JDBC connections.
-* Contact Manager consists of seven classes and is entirely written in Java.
-* Two JAR files — MySQL driver and LGoodDatePicker — need to be added to the classpath variable of this application.
-aljdlfj
+
+## Reference:
+Contact Manager uses a Java Swing Date Picker - **LGoodDatePicker** retrieved from https://github.com/LGoodDatePicker/LGoodDatePicker. 
